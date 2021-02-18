@@ -1,6 +1,6 @@
 const CustomerService = require('../services/customerService.js');
 
-let customerServices = new StorekeeperService();
+let customerServices = new CustomerService();
 
 const customerController  = {};
 
@@ -32,13 +32,43 @@ customerController.getProductList = async (req, res, next) => {
     
 };
 
+
+customerController.getRouteList = async (req, res, next) => {
+  try {
+      
+      const route_list = await customerServices.getRouteList();
+      
+      if(route_list.length > 0){
+        const response = {
+          err: 0,
+          obj: route_list,//should get object list
+          msg: ""
+        }
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No route Available"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
+
+
+
 customerController.checkOutMyCart = async (req, res, next) => {
     try {
         var paid_amount = req.body.paid_amount;
         var customer_id = req.body.customer_id;
         var item_list = req.body.item_list;
 
-        const resultMsg = await customerServices.checkOutMyCart(paid_amount,customer_id,item_list);
+        const resultMsg = await customerServices.checkOutMyCart(paid_amount,customer_id,item_list,route_id);
         
         if(resultMsg === "Payment Failed"){
           const response = {

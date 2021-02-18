@@ -15,7 +15,7 @@ class PaymentDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(paymentId){
         
     }
 
@@ -31,6 +31,12 @@ class PaymentDAO{
         // return id
     }
 
+    static async getAmountById(orderId){
+        // return mount
+    }
+
 
   
 }
+
+module.exports = PaymentDAO;

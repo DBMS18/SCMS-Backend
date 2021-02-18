@@ -1,4 +1,5 @@
-class ProductDAO{
+
+class UserDAO{
     constructor(){
         try {
             //connect with db            
@@ -15,7 +16,7 @@ class ProductDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(userId){
         
     }
 
@@ -26,18 +27,5 @@ class ProductDAO{
     static async deleteOneEntity(){
         
     }
-    static async getProductById(productId){
-        //retrun product name 
-    }
-
-    static async getAmountById(product_id){
-
-    }
-    static async changeAmountById(product_id,newAmount){
-        
-    }
-
-  
 }
-
-module.exports =ProductDAO;
+module.exports = UserDAO;

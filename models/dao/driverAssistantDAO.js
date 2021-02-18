@@ -18,7 +18,7 @@ class DriverAssistentDAO {
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(assistantId){
         
     }
 
@@ -29,5 +29,7 @@ class DriverAssistentDAO {
     static async deleteOneEntity(){
         
     }
+    static async getNameById(assistantId){
 
+    }
 }

@@ -1,48 +1,76 @@
-/// these are sample code 
-/// this is the data accessobject (DAO)
 
+class UserModel{
+   
 
-//---------------------------------------------------------------------//
+    constructor(userName,nic,email,password,name,addressline1,addressline2,city,zip){
+        this.userName = userName;
+        this.nic = nic;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.addressline1 = addressline1;
+        this.addressline2 = addressline2;
+        this.city  = city; 
+        this.zip = zip;
 
+    }
 
-// const { DataTypes } = require('sequelize');
-// const sequelize = require('../config/database');
-// const bcrypt = require("bcrypt");
+    getUserName() {
+        return this.userName;        
+    }
+    getNIC() {
+        return this.nic;        
+    }
+    getEmail() {
+        return this.email;        
+    }
+    getPassword() {
+        return this.password;        
+    }
+    getName() {
+        return this.name;        
+    }
+    getAddressLine1() {
+        return this.addressline1;        
+    }
+    getAddressLine2() {
+        return this.addressline2;        
+    }
+    getCity() {
+        return this.city;        
+    }
+    getZip() {
+        return this.zip;        
+    }
 
-// const UserModel=sequelize.define('User',{
-//     id: {
-//         type: DataTypes.INTEGER,
-//         autoincrement: true,
-//         primaryKey: true
-//     },
-//     first_name: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     last_name: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     email:{
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     password: DataTypes.STRING,
-//     profile_pic: DataTypes.STRING,
-//     is_deleted: DataTypes.BOOLEAN
-// },{
-//     sequelize,
-//     modelName:'User',
-//     tableName:'User',
-//     timestamps: false,
-//     instanceMethods: {
-//         generateHash(password) {
-//             return bcrypt.hash(password, bcrypt.genSaltSync(8));
-//         },
-//         validPassword(password) {
-//             return bcrypt.compare(password, this.password);
-//         }
-//     }
-// });
+    setUserName(userName) {
+        this.userName = userName;                
+    }
+    setNIC(nic) {
+        this.nic = nic;                
+    }
+    setEmail(email) {
+        this.email = email;                
+    }
+    setPassword(password) {
+        this.password = password;                
+    }
+    setName(name) {
+        this.name = name;                
+    }
+    setAddressLine1(addressline1) {
+        this.addressline1 = addressline1;                
+    }
+    setAddressLine2(addressline2) {
+        this.addressline2 = addressline2;                
+    }
+    setCity(city) {
+        this.city = city;                
+    }
+    setZip(zip) {
+        this.zip = zip;                
+    }
 
-// module.exports = UserModel;
+    
+
+}

@@ -27,4 +27,9 @@ class OrderStoreDAO{
     static async deleteOneEntity(){
         
     }
+    static async getAllOrdersInMyStore(storeId){
+        
+    }
 }
+
+module.exports =OrderStoreDAO;

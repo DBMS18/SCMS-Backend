@@ -16,7 +16,7 @@ class RouteDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(routeId){
         
     }
 
@@ -33,4 +33,10 @@ class RouteDAO{
     static async getStoreIdByRouteId(routeId){
         //retrun store id
     }
+
+    static async getSpendTime(route_id){
+        // return duration time
+    }
 }
+
+module.exports = RouteDAO;

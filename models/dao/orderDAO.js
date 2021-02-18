@@ -8,7 +8,7 @@ class OrderDAO{
         }
     }
 
-    static async createOneEntity(){
+    static async createOneEntity(customer_id,payment_id,dateNow,status,total_amount,route_id){
 
     }
 
@@ -16,7 +16,7 @@ class OrderDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(orderId){
         
     }
 
@@ -37,4 +37,13 @@ class OrderDAO{
     static async markOrderDelivering(customer_id,order_id){
         //sql = update order status  Where order_id/customer_id
     }
+    static async getOrderId(customer_id,payment_id,dateNow,status,total_amount){
+
+    }
+    static async getOrdersByCustomerId(customer_id){
+        
+    }
+    
 }
+
+module.exports = OrderDAO;

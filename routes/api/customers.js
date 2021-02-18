@@ -8,14 +8,12 @@ const customerController = require('../../controllers/customerController.js');
 router.get('/api/customer', authorization); // get customer dashboard
 
 router.get('/api/customer/get-products', authorization, customerController.getProductList);
+router.get('/api/customer/get-routes', authorization, customerController.getRouteList);
 router.post('/api/cutomer/checkout-cart', authorization,customerController.checkOutMyCart);
 
 
 router.get('/api/customer/get-orders/:customerId', authorization, customerController.getMyOrderList);
 router.get('/api/customer/mark-delivery/:customerId/:orderId', authorization, customerController.markDelivering);
-
-
-
 
 
 

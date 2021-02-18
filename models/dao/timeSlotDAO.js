@@ -16,7 +16,7 @@ class TimeSlotDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(slotId){
         
     }
 
