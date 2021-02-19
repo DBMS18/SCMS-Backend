@@ -1,10 +1,3 @@
-/// these are sample codes
-/// if you need you can change these
-
-
-
-////---------------------------------------------------------////
-
 const express = require('express'),
 http = require('http');
 const HttpStatus = require('http-status');
@@ -31,13 +24,16 @@ server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-// //user Routes
-// const usersRoutes = require('./routes/api/users');
-// app.use('/api', usersRoutes);
+const router = express.Router();
 
-// //guest Routes
-// const guestsRoutes = require('./routes/api/guests');
-// app.use('/api/guests', guestsRoutes);
+
+//user Routes
+const usersRoutes = require('./routes/api/users');
+app.use('/api', usersRoutes);
+
+//guest Routes
+const guestsRoutes = require('./routes/api/guests');
+app.use('/api/guests', guestsRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

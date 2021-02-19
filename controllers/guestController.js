@@ -1,58 +1,53 @@
-/// these are sample code 
-/// can you login and createaccount method directly with few changes
-
-
-//---------------------------------------------------------------------//
-
-
-// const Guest = require('../services/guest.js');
-// const jwt = require('jsonwebtoken');
+let CustomerModel = require('../models/customer-model');
+const Guest = require('../services/guest.js');
+const jwt = require('jsonwebtoken');
 // const bcrypt = require('bcryptjs');
-// const config = require('config');
+const config = require('config');
 // const md5 = require('md5');
 
-// // Instantiate User:
-// let guest = new Guest();
+// Instantiate User:
+let guest = new Guest();
 
-// const guestController  = {};
+const guestController  = {};
 
-// //guest functions
+//guest functions
 
-// guestController.createAccount = async (req, res, next) => {
-//     try {
-//         const { first_name,last_name, email, password } = req.body;
-//         const information = [{first_name,last_name, email, password}];
-//         const response = await guest.createAccount(information);
+guestController.createAccount = async (req, res, next) => {
+    try {
+      console.log("req.body");
+        const user = new CustomerModel(req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
+        console.log(user.email);
+        const response = await guest.createAccount(user);
+console.log(response + "after");
+        if(response === true){
+            const response = {
+                err: 0,
+                obj: true,
+                msg: "User successfully registered"
+              }
+              return res.json(response);
+        }else if(response === false){
+            const response = {
+                err: 0,
+                obj: false,
+                msg: "User already exists"
+              }
+              return res.json(response);
+        }else{
+            const response = {
+                err: 1,
+                obj: {},
+                msg: "Something is wrong"
+              }
+              return res.json(response);
+        }
 
-//         if(response === true){
-//             const response = {
-//                 err: 0,
-//                 obj: true,
-//                 msg: "User successfully registered"
-//               }
-//               return res.json(response);
-//         }else if(response === false){
-//             const response = {
-//                 err: 0,
-//                 obj: false,
-//                 msg: "User already exists"
-//               }
-//               return res.json(response);
-//         }else{
-//             const response = {
-//                 err: 0,
-//                 obj: {},
-//                 msg: "Something is wrong"
-//               }
-//               return res.json(response);
-//         }
+    } catch (err) {
+      next(err);
+    }
+  };
 
-//     } catch (err) {
-//       next(err);
-//     }
-//   };
-
-//   guestController.login = async(req, res, next) => {
+  guestController.login = async(req, res, next) => {
 //     try {
 //         const email = req.query.email; 
 //         const password = req.query.password; 
@@ -114,7 +109,7 @@
 //     } catch (err) {
 //       next(err);
 //     }
-//   };
+  };
 
 
-// module.exports = guestController;
+module.exports = guestController;
