@@ -1,4 +1,4 @@
-
+const db = require('../../db/db')
 class OrderDAO{
     constructor(){
         try {
@@ -41,7 +41,7 @@ class OrderDAO{
 
     }
     static async getOrdersByCustomerId(customer_id){
-        
+        //get orders with status send for delivering and customer_id= ?1
     }
     
 }

@@ -1,6 +1,6 @@
 const db = require('../../db/db')
+class StorekeeperDutyRecordDAO{
 
-class OrderDutyRecordDAO{
     constructor(){
         try {
             //connect with db            
@@ -9,7 +9,7 @@ class OrderDutyRecordDAO{
         }
     }
 
-    static async createOneEntity(orderId, dutyId){
+    static async createOneEntity(user_id,duty_id){
 
     }
 
@@ -28,6 +28,7 @@ class OrderDutyRecordDAO{
     static async deleteOneEntity(){
         
     }
+
 }
 
-module.exports = OrderDutyRecordDAO
+module.exports = StorekeeperDutyRecordDAO;

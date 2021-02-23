@@ -1,43 +1,16 @@
-/// these are sample codes
-/// if you need you can change these
-
-
-
-////---------------------------------------------------------////
-
-const express = require('express'),
-http = require('http');
-const HttpStatus = require('http-status');
+const express = require('express');
+// http = require('http');
+// const HttpStatus = require('http-status');
 const bodyParser = require('body-parser');
-const cors = require("cors");
-
-const hostname = 'localhost';
-const port = 5000;
-
+// const cors = require("cors");
 const app = express();
-app.use(cors());
+
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// app.use((req, res, next) => {
-//     console.log(req.headers);
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/html');
-//     res.end('<html><body><h1>Hello world!</h1></body></html>');
-// });
-
-const server = http.createServer(app);
-
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
-
-// //user Routes
-// const usersRoutes = require('./routes/api/users');
-// app.use('/api', usersRoutes);
-
-// //guest Routes
-// const guestsRoutes = require('./routes/api/guests');
-// app.use('/api/guests', guestsRoutes);
+app.use(require('./routes'));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -46,10 +19,10 @@ app.use((req, res, next) => {
     err.log = "not found";
     next(err);
   });
-  
+
   // error handler
   // no stacktraces leaked to user unless in development environment
-  app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
     if (err.status === 404) {
         const response = {
             err: 1,
@@ -66,3 +39,14 @@ app.use((req, res, next) => {
         return res.json(response);
     }
   });
+
+
+
+
+console.log("Main index load");
+
+const server = app.listen(3000, () => {
+    console.log('Express server listening on port 3000 in development mode');
+});
+
+module.exports = server;

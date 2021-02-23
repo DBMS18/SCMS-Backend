@@ -1,6 +1,7 @@
 const db = require('../../db/db')
 
-class OrderDutyRecordDAO{
+
+class AssistantDAO{
     constructor(){
         try {
             //connect with db            
@@ -9,7 +10,7 @@ class OrderDutyRecordDAO{
         }
     }
 
-    static async createOneEntity(orderId, dutyId){
+    static async createOneEntity(){
 
     }
 
@@ -17,7 +18,7 @@ class OrderDutyRecordDAO{
         
     }
 
-    static async readOneEntity(){
+    static async readOneEntity(driverId){
         
     }
 
@@ -28,6 +29,14 @@ class OrderDutyRecordDAO{
     static async deleteOneEntity(){
         
     }
+    static async getNameById(driverId){
+
+    }
+    static async getUnlocHalfLockkAssistant(store_id){
+        // return unlock or half unlock drivers in that store
+    }
+
+
 }
 
-module.exports = OrderDutyRecordDAO
+module.exports =AssistantDAO;

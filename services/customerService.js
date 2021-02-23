@@ -10,7 +10,6 @@ class CustomerService {
 
     }
 
-    //get product list -ok
     async getProductList() { 
         try {
             var productList = await ProductDAO.readAllEntity();
@@ -20,10 +19,13 @@ class CustomerService {
             //    [
             //        {
             //            product_id:1,
-            //            type: Shampoo,
+            //            name:Magee
+            //            type: Noodles,
             //            discription: good product for anyone,
+            //            picture_url:http/www.abc.com
             //            amount: 23,
-            //            price:23
+            //            price:23,
+            //            capacity:20
             //        },
             //             ..........
             //    ]
@@ -39,20 +41,15 @@ class CustomerService {
     async getRouteList() {
         try {
 
-            var routetList = []
-            var routes = await RouteDAO.readAllEntity();
-            routes.forEach(route => {
-                let routeId = route.routeId;
-                let discription = route.discription;
-                var OneRoute = { routeId, discription };
-                routetList.push(OneRoute);
-            });
+            var routes = await QueryDAO.getAllRoutes();
+        
 
-            return routetList;
+            return routes;
             //    [
             //        {
             //            route_id:1,
-            //            discription: Colombo,panadura
+            //            city_id:2,
+            //            city_name: Panadura
             //        },
             //             ..........
             //    ]
@@ -66,8 +63,10 @@ class CustomerService {
 
     //------front end handle cart-------
 
-
+    
+    //---------------------------Checkout process-------------------------
     async checkOutMyCart(paid_amount, customer_id, item_list, route_id) {
+        //other way - can make procedure/transaction to update all table
         try {
 
             var paymentId = this.makeOneTimePayment(paid_amount);
@@ -147,12 +146,13 @@ class CustomerService {
 
     async markProductsInOrder(order_id, item_list) {
         try {
-            item_list.forEach(product => {
+            for (let i = 0; i < item_list.length; i++) {
+                var product = item_list[i];
                 let product_id = product.product_id;
                 let ordered_quantity = product.ordered_quantity;
                 await ProductOrderDAO.createOneEntity(order_id, product_id, ordered_quantity);
                 this.updateProductAvailableQuantity(product_id, ordered_quantity)
-            });
+            }
 
             return "Order Created Success";
 
@@ -175,47 +175,52 @@ class CustomerService {
 
     }
 
+    //-----------------------Confirm order----------------------
+
     async getMyOrderList(customer_id) {
         try {
+            
             var order_list = await OrderDAO.getOrdersByCustomerId(customer_id);
             var myOrders = [];
-            order_list.forEach(order => {
-                let id = order.orderId;
+            for (let i = 0; i < order_list.length; i++) {
+                var order = order_list[i];
+                
+                let order_id = order.order_id;
                 let date = order.date;
-                let total_amount = order.totalAmount;
+                let total_capacity = order.total_capacity;
                 let status = order.status;
-                let paymentId = order.orderId
+                let payment_id = order.payment_id
 
-                let productList = []
 
-                var payment = await PaymentDAO.readOneEntity(paymentId);
-                let paid_amount = payment.amount;
+                var payment = await PaymentDAO.readOneEntity(payment_id);
+ 
 
-                var product_list = await QueryDAO.getProductByOrderId(id);
-                // productJsonList.forEach(product => {
-                //     let productName = await ProductDAO.getProductById(product.productId);
-                //     let orderedQuantity = product.quantity
-                //     var OneProduct = { productName, orderedQuantity }
-                //     productList.push(OneProduct);
-                // });
+                var product_list = await QueryDAO.getProductByOrderId(order_id);
+   
 
-                var OneOrder = { id, date, total_amount, paid_amount, status, product_list }
+                var OneOrder = { order_id, date, total_capacity, payment, status, product_list }
                 myOrders.push(OneOrder);
-
-            });
+            }
 
             return myOrders;
             //    [
             //        {
-            //            id:1,
+            //            order_id:1,
             //            date:2020-12-12,
-            //            total_amount: 5,
-            //            paid_amount: 300,
+            //            total_capacity: 50,
+            //            payment: {
+            //                payment_id:2,
+            //                payment_method = online,
+            //                paid_amount :200,
+            //                date:2020-10-02
+            //                time:10:30:30
+            //            },
             //            status: Send to Delivery,
             //            product_list:[
             //                {
-            //                 productName:Shampoo,
-            //                 orderedQuantity: 10
+            //                 product_id:2
+            //                 name:Shampoo,
+            //                 ordered_quantity: 10
             //                },
             //                     ..........
             //            ]
