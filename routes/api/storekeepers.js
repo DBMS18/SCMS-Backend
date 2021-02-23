@@ -27,6 +27,9 @@ router.post('/order-markas-send',storekeeperController.markAsSendForDelivering);
 
 
 
+router.get('/test/:user_id', storekeeperController.mockFunctions);// authorization should add
+
+
 
 
 

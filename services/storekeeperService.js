@@ -293,6 +293,20 @@ class StorekeeperService {
 
         }
     }
+   
+    async  mockFunctions(user_id) {
+        try {
+
+            var customer = await QueryDAO.mockTest(user_id);
+
+           
+
+            return customer;
+
+        } catch (error) {
+
+        }
+    }
 
 }
 

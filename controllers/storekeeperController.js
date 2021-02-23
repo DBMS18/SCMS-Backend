@@ -302,9 +302,36 @@ storekeeperController.markAsSendForDelivering = async (req, res, next) => {
 };
 
 
-//-------------------------Part 3----------------------------------------------
+//-------------------------Mock function----------------------------------------------
 
+storekeeperController.mockFunctions = async (req, res, next) => {
+  try {        
+      const user_id = req.params.user_id;  
+      
 
+      const customer = await storekeeperServices.mockFunctions(user_id); 
+      
+      if(customer != null){
+        const response = {
+          err: 0,
+          obj: customer,
+          msg: "Test Pass"
+        }
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "Test Faield"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
 
 
 

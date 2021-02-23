@@ -31,9 +31,9 @@ class QueryDAO{
     
 
     
-    static async correctDAOMethod(user_id){
+    static async mockTest(user_id){
 
-        const query  = `SELECT * FROM customer`;
+        const query  = `SELECT * FROM customer WHERE customer_id = ? `;
         const out = await db.query(query,[user_id]);
         console.log(out[0]);
         return out[0];
