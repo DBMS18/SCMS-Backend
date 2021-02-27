@@ -14,17 +14,14 @@ function sleep(ms) {
 customerController.getProductList = async (req, res, next) => {
     try {
         
-        //const product_list = await customerServices.getProductList();
-  console.log(1);
-  await sleep(3000);
-  console.log(2);
+        const product_list = await customerServices.getProductList();
+        console.log("product_list");
         if(product_list.length > 0){
           const response = {
             err: 0,
-            obj: Products,//should get object list
+            obj: product_list,//should get object list
             msg: ""
           }
-          console.log(response.obj)
           return res.json(response);
         }else{
           const response = {
@@ -50,7 +47,7 @@ customerController.getRouteList = async (req, res, next) => {
       if(route_list.length > 0){
         const response = {
           err: 0,
-          obj: route_list,//should get object list
+          obj: route_list,
           msg: ""
         }
         return res.json(response);
@@ -76,6 +73,8 @@ customerController.checkOutMyCart = async (req, res, next) => {
         var paid_amount = req.body.paid_amount;
         var customer_id = req.body.customer_id;
         var item_list = req.body.item_list;
+        var route_id = req.body.route_id;
+        var address = req.body.address; // should enter
 
         const resultMsg = await customerServices.checkOutMyCart(paid_amount,customer_id,item_list,route_id);
         
@@ -111,13 +110,14 @@ customerController.checkOutMyCart = async (req, res, next) => {
 // get my order list
 customerController.getMyOrderList = async (req, res, next) => {
     try {
-        var customer_id = req.query.customerId;
+        var customer_id = req.params.customer_id;
+
         const order_list = await customerServices.getMyOrderList(customer_id);
         
         if(order_list.length > 0){
           const response = {
             err: 0,
-            obj: order_list,//should get object list
+            obj: order_list,
             msg: ""
           }
           return res.json(response);
@@ -140,8 +140,9 @@ customerController.getMyOrderList = async (req, res, next) => {
 
 customerController.markDelivering = async (req, res, next) => {
   try {
-      var customer_id = req.query.customerId;
-      var order_id = req.query.orderId;
+      var customer_id = req.params.customer_id;
+      var order_id = req.params.order_id;
+      
       const result = await customerServices.markOrderDelivering(customer_id,order_id);
       
       if(result != null){

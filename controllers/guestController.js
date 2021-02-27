@@ -3,6 +3,7 @@ const Guest = require('../services/guest.js');
 const jwt = require('jsonwebtoken');
 // const bcrypt = require('bcryptjs');
 const config = require('config');
+const e = require('express');
 // const md5 = require('md5');
 
 // Instantiate User:
@@ -19,13 +20,13 @@ function sleep(ms) {
 
 guestController.createAccount = async (req, res, next) => {
     try {
-      console.log("object")
-        const user = new CustomerModel(req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
-        const response = true;
-  console.log(1);
-  await sleep(3000);
-  console.log(2);
-        //await guest.createAccount(user);
+      console.log("object");
+        const user = new CustomerModel(null,req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
+        const response = await guest.createAccount(user);;
+  // console.log(1);
+  // await sleep(3000);
+  // console.log(2);
+        
         
         if(response === true){
             const response = {
@@ -59,80 +60,85 @@ guestController.createAccount = async (req, res, next) => {
     try {
         const email = req.query.email; 
         const password = req.query.password; 
-  console.log(1);
-  await sleep(3000);
-  console.log(2);
-        let user = {
-          id:1,
-          role:"customer",
-          isAdmin:true
-        }
-        let response = {
-          err: 0,
-          obj: {
-            token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IjEiLCJyb2xlIjoiZ3Vlc3QiLCJpYXQiOjM1MTY4MzkwMjJ9.7X9jBLUVCq5-lkl2K5YNYmXa5_vGDDFvIFsKY8nGltw',
-            user: user
-        },
-          msg: "Login Successful"}
+        // let user = {
+        //   id:1,
+        //   role:"customer",
+        //   isAdmin:true
+        // }
+        // let response = {
+        //   err: 0,
+        //   obj: {
+        //     token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IjEiLCJyb2xlIjoiZ3Vlc3QiLCJpYXQiOjM1MTY4MzkwMjJ9.7X9jBLUVCq5-lkl2K5YNYmXa5_vGDDFvIFsKY8nGltw',
+        //     user: user
+        // },
+        //   msg: "Login Successful"}
 
-          console.log(response);
-          return res.json(response);
       
         
-//         let user = await guest.getUser(email);
+        let user = await guest.getUser(email);
         
-//         //console.log(user); 
-//         //validate password
-//         //console.log(user[0]);
-//         let pass = user[0][0].password;
-//         //console.log(pass);
-//          let passw = md5(password);
-//         let usr = user[0][0];
-//         /*bcrypt.compare(passw, pass)
-//         .then(isMatch => {
-//             if(!isMatch){
-//                 const response = {
-//                     err: 1,
-//                     obj: {},
-//                     msg: "Invalid password"
-//                   }
-//                   return res.json(response);
-//             }
+            if (user[0][0][0]===undefined) {
+              console.log("und"+user[0][0][0])
+            }else{
+              if (user[0][0][0].role_name===undefined) {
+                console.log(user[0][0][0])
+                console.log("customer")
+              } else {
+                console.log(user[0][0][0])
+                console.log(user[0][0][0].role_name)
+              }
+            }
+        //validate password
+        //console.log(user[0]);
+        let pass = user[0][0].password;
+        //console.log(pass);
+         let passw = md5(password);
+        let usr = user[0][0];
+        /*bcrypt.compare(passw, pass)
+        .then(isMatch => {
+            if(!isMatch){
+                const response = {
+                    err: 1,
+                    obj: {},
+                    msg: "Invalid password"
+                  }
+                  return res.json(response);
+            }
             
-//             jwt.sign(
-//                 {id: user.id},
-//                 config.get('jwtSecret'),
-//                 { expiresIn: 3600 },
-//                 (err, token) => {
-//                     if(err) throw err;
-//                     return res.json({
-//                         token,
-//                         user: user
-//                     });
-//                 }
-//             )
-//         });
-// */    if (pass===passw){
-//           jwt.sign(
-//             {id: usr.id},
-//             config.get('jwtSecret'),
-//             { expiresIn: 3600 },
-//             (err, token) => {
-//                 if(err) throw err;
-//                 return res.json({
-//                     token,
-//                     user: user
-//                 });
-//             })
-//             //console.log(usr.id);
-//           }else{
-//             const response = {
-//               err: 1,
-//               obj: {},
-//               msg: "Invalid password"
-//             }
-//             return res.json(response);
-//           }
+            jwt.sign(
+                {id: user.id},
+                config.get('jwtSecret'),
+                { expiresIn: 3600 },
+                (err, token) => {
+                    if(err) throw err;
+                    return res.json({
+                        token,
+                        user: user
+                    });
+                }
+            )
+        });
+*/    if (pass===passw){
+          jwt.sign(
+            {id: usr.id},
+            config.get('jwtSecret'),
+            { expiresIn: 3600 },
+            (err, token) => {
+                if(err) throw err;
+                return res.json({
+                    token,
+                    user: user
+                });
+            })
+            //console.log(usr.id);
+          }else{
+            const response = {
+              err: 1,
+              obj: {},
+              msg: "Invalid password"
+            }
+            return res.json(response);
+          }
       
     }catch (err) {
       next(err);

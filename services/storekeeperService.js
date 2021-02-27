@@ -1,11 +1,14 @@
-// const StorekeeperDAO =require('../models/dao/storekeeperDAO.js');
+//const StorekeeperDAO =require('../models/dao/storekeeperDAO.js');
 const OrderDAO = require("../models/dao/orderDAO.js");
 const RouteDAO = require("../models/dao/routeDAO.js");
-const OrderStoreDAO = require("../models/dao/order_storeDAO.js");
+const OrderStoreDAO = require("../models/dao/order_storeDAO");
+const DriverDAO = require("../models/dao/driverDAO");
+const AssistantDAO = require("../models/dao/assistantDAO");
 const OrderDutyRecordDAO  = require("../models/dao/order_dutyRecordDAO.js");
 const UserDAO = require("../models/dao/userDAO.js");
-const QueryDAO = require("../models/dao/QueryDAO.js");
+const QueryDAO = require("../models/dao/QueryDAO");
 const DutyRecordDAO = require("../models/dao/dutyRecordDAO.js");
+const StorekeeperDutyRecordDAO = require("../models/dao/storekeeper_dutyRecordDAO.js");
 
 class StorekeeperService {
     constructor() {
@@ -15,44 +18,47 @@ class StorekeeperService {
     //get orders in Train list
     async orderSendByManager(user_id) {
         try {
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
-
-            var OurStoreOrdersList = []
+            const store_id = await QueryDAO.getStoreId(user_id);
+          
+            
+            var OurStoreOrdersList = [] 
             var allOrdersList = await OrderDAO.getAllUnReceviedOrders(); //get all orders list with not recvied status
-            allOrdersList.forEach(order => {
-                var storeId = await RouteDAO.getStoreIdByRouteId(order.routeId);
+            
+            for (let i = 0; i < allOrdersList.length; i++) {
+                var order = allOrdersList[i];
+                const storeId = await RouteDAO.getStoreIdByRouteId(order.route_id);
                 if (storeId === store_id) {
-                    let id = order.orderId;
+                    let order_id = order.order_id;
                     let date = order.date;
-                    let total_amount = order.totalAmount;
+                    let total_capacity = order.total_capacity;
 
                     var product_list = await QueryDAO.getProductByOrderId(id);
                     
-                    var OneOrder = { id, date, total_amount, product_list }
+                    var OneOrder = { order_id, date, total_capacity, product_list }
                     OurStoreOrdersList.push(OneOrder);
                 }
-            });
+            }
 
             return OurStoreOrdersList;
             //    [
             //        {
             //            id:1,
             //            date:2020-12-12,
-            //            total_amount: 5,
+            //            total_capacity: 50,
             //            product_list:[
-            //                {
-            //                 productName:Shampoo,
-            //                 orderedQuantity: 10
-            //                },
-            //                     ..........
+            //                 {
+            //                     product_id:2
+            //                     name:Shampoo,
+            //                     ordered_quantity: 10
+            //                 },
+            //                 ..........                           
             //            ]
             //        },
             //             ..........
             //    ]
 
         } catch (error) {
-
+            console.log(error)
         }
 
     }
@@ -60,109 +66,37 @@ class StorekeeperService {
     async orderReceviedToStore(order_id, user_id) {
         try {
 
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
+            const store_id =  await QueryDAO.getStoreId(user_id);
 
             var today = new Date()
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0');
             var yyyy = today.getFullYear();
             var dateNow = yyyy + '-' + mm + '-' + dd;
-
-            // add this order to order_store table
+          
+               
             await OrderStoreDAO.createOneEntity(order_id, store_id, dateNow);
 
-            //change order status
             await OrderDAO.changeOrderStatus(order_id, "Recevied To Store");
 
             return "Mark Success";
 
         } catch (error) {
-
+            console.log(error);
         }
     }
 
 
     //-----------------------task 2--------------------------
 
-
-    async getAvailableDrivers(user_id) {
-        try {
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
-            //check following
-            // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-            // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week.
-
-
-            //return driver list
-            // [
-            //     {
-            //         driver_id: 1,
-            //         driver_name: Kamal
-            //     },
-            //     ..........
-            // ]
-        } catch (error) {
-
-        }
-
-    }
-
-    async getAvailableAssistants(user_id) {
-        try {
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
-            //check following
-            // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-            // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week.
-
-
-            //return driver list
-            // [
-            //     {
-            //         assistant_id: 1,
-            //         assistant_name: Kamal
-            //     },
-            //     ..........
-            // ]
-
-        } catch (error) {
-
-        }
-    }
-
-    async getAvailableTrucks(user_id) {
-        try {
-
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
-            //check following
-            // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-            // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
-
-
-            //return driver list
-            // [
-            //     {
-            //         truck_number: 1
-            //        
-            //     },
-            //     ..........
-            // ]
-
-        } catch (error) {
-
-        }
-    }
-
     async getAvailablerRoutes(user_id) {
         try {
 
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
+            const store_id = await QueryDAO.getStoreId(user_id);
             
             var route_list = await QueryDAO.getRouteForOrdersByStore(store_id);
+            
+
 
             return route_list;
 
@@ -179,13 +113,103 @@ class StorekeeperService {
         }
     }
 
+
+    async getAvailableDrivers(user_id) {
+        try {
+            const store_id = await QueryDAO.getStoreId(user_id);
+            const driverList = []
+
+
+            var drivers = await DriverDAO.getUnlockDrivers(store_id)
+            for (let i = 0; i < drivers.length; i++) {
+                var driver = drivers[i];
+
+                let driver_id = driver.driver_id;
+                let driver_name = driver.driver_name;
+
+                var OneDriver = {driver_id,driver_name}
+                driverList.push(OneDriver);
+            }
+            //get working hours < 40 drivers in Store = store_id
+
+            //
+
+
+            return driverList
+            // [
+            //     {
+            //         driver_id: 1,
+            //         driver_name: Kamal
+            //     },
+            //     ..........
+            // ]
+        } catch (error) {
+
+        }
+
+    }
+
+    async getAvailableAssistants(user_id) {
+        try {
+            const store_id = await QueryDAO.getStoreId(user_id);
+      
+
+            const assistantList = [];
+            var assistants = await AssistantDAO.getUnlocHalfLockkAssistant(store_id);
+            for (let i = 0; i < assistants.length; i++) {
+                var assistant = assistants[i];
+
+                let assistant_id = assistant.assistant_id;
+                let assistant_name = assistant.assistant_name;
+
+                var OneAssistant = {assistant_id,assistant_name}
+                assistantList.push(OneAssistant);
+            }
+
+            return assistantList;
+            // [
+            //     {
+            //         assistant_id: 1,
+            //         assistant_name: Kamal
+            //     },
+            //     ..........
+            // ]
+
+        } catch (error) {
+
+        }
+    }
+
+    // async getAvailableTrucks(user_id) {
+    //     try {
+
+    //         const store_id = await QueryDAO.getStoreId(user_id);
+    //         //check following
+    //         // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
+    //         // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
+
+
+    //         //return driver list
+    //         // [
+    //         //     {
+    //         //         truck_number: 1
+    //         //        
+    //         //     },
+    //         //     ..........
+    //         // ]
+
+    //     } catch (error) {
+
+    //     }
+    // }
+
+    
     //-------------------create duty ---------------------------
 
     async createDutyRecord(user_id, route_id, driver_id, assistent_id, truck_number) {
         try {
 
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
+            const store_id = await QueryDAO.getStoreId(user_id);
 
             var today = new Date()
             var dd = String(today.getDate()).padStart(2, '0');
@@ -199,9 +223,9 @@ class StorekeeperService {
             let endTime = currentTime + spendTime;
 
 
-            await DutyRecordDAO.createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number, endTime);
-            duty_id = await DutyRecordDAO.getLastCreatedDutyId(store_id, route_id, driver_id, assistent_id, truck_number); // not sure
-
+            var duty_id = await DutyRecordDAO.createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number, endTime); //check result here
+           
+            await StorekeeperDutyRecordDAO.createOneEntity(user_id,duty_id);
 
             return duty_id;
 
@@ -210,59 +234,58 @@ class StorekeeperService {
         }
     }
 
-    // get recevied orders
+    
     async getReceviedOrdersFromStore(user_id,route_id) {
         try {
-            const myUser = await UserDAO.readOneEntity(user_id);
-            const store_id = myUser.storeId;
-
-            var OurStoreOrdersList = []
-            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id,route_id);
-            allOrdersList.forEach(order => {
-                let id = order.orderId;
-                let orderDate = order.date;
-                let receivedDate = order.date
-                let total_amount = order.total_amount;
+            const store_id = await QueryDAO.getStoreId(user_id);
+          
+            
+            var OurStoreOrdersList = [] 
+            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id,route_id); 
+            
+            for (let i = 0; i < allOrdersList.length; i++) {
+                var order = allOrdersList[i];
+                
+                let order_id = order.order_id;
+                let date = order.date;
+                let total_capacity = order.total_capacity;
 
                 var product_list = await QueryDAO.getProductByOrderId(id);
-
-               
-                var OneOrder = { id, orderDate, receivedDate, total_amount, product_list }
+                    
+                var OneOrder = { order_id, date, total_capacity, product_list }
                 OurStoreOrdersList.push(OneOrder);
-
-            });
+            }
 
             return OurStoreOrdersList;
             //    [
             //        {
             //            id:1,
-            //            orderDate: 2020-12-12,
-            //            receivedDate: 2021-01-02,
-            //            total_amount: 5,
+            //            date:2020-12-12,
+            //            total_capacity: 50,
             //            product_list:[
-            //                {
-            //                 productName:Shampoo,
-            //                 orderedQuantity: 10
-            //                },
-            //                     ..........
+            //                 {
+            //                     product_id:2
+            //                     name:Shampoo,
+            //                     ordered_quantity: 10
+            //                 },
+            //                 ..........                           
             //            ]
             //        },
             //             ..........
             //    ]
 
-
         } catch (error) {
-
+            console.log(error)
         }
     }
 
-    // mark as send for delivering
+   
     async markAsSendForDelivering(order_id, duty_id) {
         try {
 
             await OrderDutyRecordDAO.createOneEntity(order_id, duty_id);
 
-            await OrderDAO.changeOrderStatus(order_id, "Send for Delivery");
+            await OrderDAO.changeOrderStatus(order_id, "Send for Delivering");
 
             return "Mark Success";
 
@@ -270,123 +293,23 @@ class StorekeeperService {
 
         }
     }
+   
+    async  mockFunctions(user_id) {
+        try {
 
+            var customer = await QueryDAO.mockTest(user_id);
+            console.log("await 1: " + customer[0].email)
+            var customer = await QueryDAO.mockTest(customer[0].customer_id);
+            console.log("await 2: " + customer)
+           
 
-    
+            return customer;
 
+        } catch (error) {
 
-    // async getTimeSlot() {
-    //     try {
+        }
+    }
 
-    //         var day = "Sunday" // get week day
-    //         var time_slot_list = await TimeSlotDAO.getTimeListByDay(day);
-
-    //         return time_slot_list;
-    //         // [
-    //         //     {
-    //         //         time_slot_id:1,
-    //         //         time:10:10:00,
-    //         //         day:sunday
-    //         //     },
-    //         //     .........
-    //         // ]
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-    // async getSetOffDutyList(user_id) {
-    //     try {
-
-    //         const myUser = await UserDAO.readOneEntity(user_id);
-    //         const store_id = myUser.storeId;
-
-    //         var dutyList = [];
-
-    //         var today = new Date()
-    //         var dd = String(today.getDate()).padStart(2, '0');
-    //         var mm = String(today.getMonth() + 1).padStart(2, '0');
-    //         var yyyy = today.getFullYear();
-    //         var dateNow = yyyy + '-' + mm + '-' + dd;
-
-    //         var dutyJsonList = await DutyRecordDAO.getSetoffDuty(store_id, dateNow); //with setoff state
-    //         dutyJsonList.forEach(duty => {
-    //             let dutyId = duty.dutyId;
-    //             let driverName = await DriverDAO.getNameById(duty.driverId);
-    //             let assistantName = await DriverAssistentDAO.getNameById(duty.assistantId);
-    //             let truckNumber = duty.truckNumber;
-                
-    //             const timeSlotJson = await TimeSlotDAO.readOneEntity(duty.timeSlotId);
-    //             let timeSlot = timeSlotJson.time;
-    //             var OneDuty = { dutyId, timeSlot, driverName, assistantName, truckNumber };
-    //             dutyList.push(OneDuty);
-
-    //         });
-    //         return dutyList;
-    //         // [
-    //         //     {
-    //         //         duty_id: 1,
-    //         //         timeSlot:10:30:00,
-    //         //         driver_name:Kamal,
-    //         //         assistant_name:Vimal,
-    //         //         truck_number:NB30-3737                   
-    //         //     },
-    //         //     ..........
-    //         // ]
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-
-    // async markDutyFinished(duty_id) {
-    //     try {
-
-    //         var status = "Arrived";
-    //         var timeNote = "10:30:12" //get current time 
-
-    //         await DutyRecordDAO.markDutyFinished(duty_id, status, timeNote);
-
-    //         //release driver/assistant/truck
-    //         return "Mark as finished"
-
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-
-    // async releaseDriver(driver_id) {
-    //     try {
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-    // async releaseAssistant(assistant_id) {
-    //     try {
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-    // async releaseTruck(truck_number) {
-    //     try {
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-
-
-
-    //mark driver/assistent/truck arrival
 }
 
 module.exports = StorekeeperService;

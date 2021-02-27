@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const authorization = require('../../middlewares/auth');
 
 const customerController = require('../../controllers/customerController.js');
@@ -7,7 +8,7 @@ const customerController = require('../../controllers/customerController.js');
 //customerController routes
 router.get('', authorization); // get customer dashboard
 
-router.get('/get-products', authorization, customerController.getProductList);
+router.get('/get-products',  customerController.getProductList);
 router.get('/get-routes', authorization, customerController.getRouteList);
 router.post('/checkout-cart', authorization,customerController.checkOutMyCart);
 

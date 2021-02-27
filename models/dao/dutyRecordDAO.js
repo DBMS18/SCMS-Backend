@@ -1,4 +1,4 @@
-
+const db = require('../../db/db')
 class DutyRecordDAO{
 
     constructor(){
@@ -10,7 +10,7 @@ class DutyRecordDAO{
     }
 
     static async createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number, endTime){
-
+        //call  procedure
     }
 
     static async readAllEntity(){
@@ -28,12 +28,12 @@ class DutyRecordDAO{
     static async deleteOneEntity(){
         
     }
-    static async getLastCreatedDutyId(store_id, time_slot_id, driver_id, assistent_id, truck_number){
+    // static async getLastCreatedDutyId(store_id, time_slot_id, driver_id, assistent_id, truck_number){
 
-    }
-    static async getSetoffDuty(store_id, dateNow){
+    // }
+    // static async getSetoffDuty(store_id, dateNow){
 
-    }
+    // }
     // static async markDutyFinished(duty_id, status, timeNote){
 
 

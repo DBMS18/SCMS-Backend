@@ -1,4 +1,4 @@
-var connection = require('../db/db');
+var db = require('../db/db');
 const bluebird = require('bluebird');
 //let mysql = require('mysql');
 
@@ -40,9 +40,10 @@ class Guest{
         return response; 
     }
 
-    async addUser(first_name,last_name,email,password){
-
-       
+    async getUser(email){
+        const querry = 'CALL login(?);';
+        const out = await db.query(querry,[email]);
+        return out;
     }
    
 

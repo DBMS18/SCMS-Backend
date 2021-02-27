@@ -1,3 +1,4 @@
+const db = require('../../db/db')
 
 
 class DriverDAO{
@@ -31,6 +32,11 @@ class DriverDAO{
     static async getNameById(driverId){
 
     }
+    static async getUnlockDrivers(store_id){
+        // return unlock drivers in that store
+    }
 
 
 }
+
+module.exports =DriverDAO;

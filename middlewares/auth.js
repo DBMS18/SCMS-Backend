@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 function authorization(req, res, next){
     const token = req.header('x-auth-token');
     //check for token
-    console.log(token);
     if(!token){
         const response = {
             err: 1,

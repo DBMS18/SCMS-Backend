@@ -1,12 +1,19 @@
-let mysql = require('mysql2/promise');
 
+const mysql = require('mysql2/promise');
+ 
 
-let connection = mysql.createConnection({
-    host: 'remotemysql.com',
-    user: 'DHWpHlClHH',
-    //port: 3306,
-    password: 'S74xORBG4k',
-    database: 'DHWpHlClHH'
-});
+  var pool  = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'dbms'
+  });
+  
+  pool.getConnection(function(err, connection) {
+    if (err){
+      throw err;
+    }
+    console.log("DB connected");
+  });
 
-module.exports = connection;
+module.exports = pool;

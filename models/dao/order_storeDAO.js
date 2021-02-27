@@ -1,4 +1,4 @@
-
+const db = require('../../db/db')
 class OrderStoreDAO{
     constructor(){
         try {
@@ -9,7 +9,9 @@ class OrderStoreDAO{
     }
 
     static async createOneEntity(orderId,storeId,dateNow){
-        //void
+        const query  = "INSERT INTO `customer` (`customer_id`, `email`, `first_name`, `last_name`, `password`) VALUE (?, 'abc@gmail', 'kamal', 'amal', 'fbcfbncfb')";
+        const out = await db.query(query,[orderId]);
+        return "Pass";
     }
 
     static async readAllEntity(){

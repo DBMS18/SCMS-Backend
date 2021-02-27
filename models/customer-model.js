@@ -2,7 +2,8 @@
 class CustomerModel{
    
 
-    constructor(nic,email,password,first_name,last_name){
+    constructor(id,nic,email,password,first_name,last_name){
+        this.id = id;
         this.nic = nic;
         this.email = email;
         this.password = password;
@@ -11,6 +12,9 @@ class CustomerModel{
 
     }
 
+    getId(){
+        return this.id;        
+    }
     getNIC() {
         return this.nic;        
     }
@@ -27,7 +31,9 @@ class CustomerModel{
         return this.last_name;        
     }
     
-
+    setId(id){
+        this.id=id;
+    }
     setNIC(nic) {
         this.nic = nic;                
     }

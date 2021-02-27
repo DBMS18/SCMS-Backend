@@ -1,4 +1,4 @@
-
+const db = require('../../db/db')
 class RouteDAO{
     constructor(){
         try {
@@ -31,7 +31,8 @@ class RouteDAO{
 
     //get store id by route id
     static async getStoreIdByRouteId(routeId){
-        //retrun store id
+        
+        return  3;
     }
 
     static async getSpendTime(route_id){

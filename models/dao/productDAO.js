@@ -1,3 +1,4 @@
+const db = require('../../db/db')
 class ProductDAO{
     constructor(){
         try {
@@ -12,7 +13,9 @@ class ProductDAO{
     }
 
     static async readAllEntity(){
-        
+        const query  = `SELECT * FROM product`;
+        const out = await db.query(query);
+        return out[0];
     }
 
     static async readOneEntity(){
