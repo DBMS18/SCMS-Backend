@@ -147,7 +147,7 @@ class CustomerService {
 
     async markProductsInOrder(order_id, item_list) {
         try {
-            item_list.forEach(product => {
+            item_list.forEach(async (product) => {
                 let product_id = product.product_id;
                 let ordered_quantity = product.ordered_quantity;
                 await ProductOrderDAO.createOneEntity(order_id, product_id, ordered_quantity);
@@ -179,7 +179,7 @@ class CustomerService {
         try {
             var order_list = await OrderDAO.getOrdersByCustomerId(customer_id);
             var myOrders = [];
-            order_list.forEach(order => {
+            order_list.forEach(async (order) => {
                 let id = order.orderId;
                 let date = order.date;
                 let total_amount = order.totalAmount;

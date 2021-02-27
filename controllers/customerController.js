@@ -3,19 +3,28 @@ const CustomerService = require('../services/customerService.js');
 let customerServices = new CustomerService();
 
 const customerController  = {};
+Products = require('./ProductFile');
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+} 
 
 //customer functions
 customerController.getProductList = async (req, res, next) => {
     try {
         
-        const product_list = await customerServices.getProductList();
-        
+        //const product_list = await customerServices.getProductList();
+  console.log(1);
+  await sleep(3000);
+  console.log(2);
         if(product_list.length > 0){
           const response = {
             err: 0,
-            obj: product_list,//should get object list
+            obj: Products,//should get object list
             msg: ""
           }
+          console.log(response.obj)
           return res.json(response);
         }else{
           const response = {

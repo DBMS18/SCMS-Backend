@@ -11,14 +11,22 @@ let guest = new Guest();
 const guestController  = {};
 
 //guest functions
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}   
 
 guestController.createAccount = async (req, res, next) => {
     try {
-      console.log("req.body");
+      console.log("object")
         const user = new CustomerModel(req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
-        console.log(user.email);
-        const response = await guest.createAccount(user);
-console.log(response + "after");
+        const response = true;
+  console.log(1);
+  await sleep(3000);
+  console.log(2);
+        //await guest.createAccount(user);
+        
         if(response === true){
             const response = {
                 err: 0,
@@ -48,11 +56,31 @@ console.log(response + "after");
   };
 
   guestController.login = async(req, res, next) => {
-//     try {
-//         const email = req.query.email; 
-//         const password = req.query.password; 
+    try {
+        const email = req.query.email; 
+        const password = req.query.password; 
+  console.log(1);
+  await sleep(3000);
+  console.log(2);
+        let user = {
+          id:1,
+          role:"customer",
+          isAdmin:true
+        }
+        let response = {
+          err: 0,
+          obj: {
+            token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IjEiLCJyb2xlIjoiZ3Vlc3QiLCJpYXQiOjM1MTY4MzkwMjJ9.7X9jBLUVCq5-lkl2K5YNYmXa5_vGDDFvIFsKY8nGltw',
+            user: user
+        },
+          msg: "Login Successful"}
+
+          console.log(response);
+          return res.json(response);
+      
         
 //         let user = await guest.getUser(email);
+        
 //         //console.log(user); 
 //         //validate password
 //         //console.log(user[0]);
@@ -106,9 +134,9 @@ console.log(response + "after");
 //             return res.json(response);
 //           }
       
-//     } catch (err) {
-//       next(err);
-//     }
+    }catch (err) {
+      next(err);
+    }
   };
 
 

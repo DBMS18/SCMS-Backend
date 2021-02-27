@@ -28,7 +28,7 @@ const router = express.Router();
 
 
 //user Routes
-const usersRoutes = require('./routes/api/users');
+const usersRoutes = require('./routes/api/customers');
 app.use('/api', usersRoutes);
 
 //guest Routes

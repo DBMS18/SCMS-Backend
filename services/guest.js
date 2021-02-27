@@ -1,49 +1,43 @@
-var db = require('../db/db');
+var connection = require('../db/db');
+const bluebird = require('bluebird');
 //let mysql = require('mysql');
 
 
 class Guest{
 
-    async  createAccount(user){
+    constructor(){}
+
+    async createAccount(user){
         let response = "";
-        console.log("a");
-        await  db.query('select count(*) as number_of_rows from customer where email=?', [user.email], async function(err, result) {
+        console.log(user.email,user.password);
+        try {
+            connection.query('select count(*) as number_of_rows from customer where email=?', [user.email]); 
+        } catch (error) {
+            console.log('caught exception!', error);
+        }
+        
+        console.log(rows);
+        await db.query('select count(*) as number_of_rows from customer where email=?', [user.email], async function (err, result) {
             if (err) response = err;
-            console.log("b");
-            if(result[0]['number_of_rows']>0) {
-                
-                console.log("c");
-                await db.query('INSERT INTO `customer`(`email`, `first_name`, `last_name`, `password`) VALUES (?,?,?,?)', [user.email,user.first_name,user.last_name,user.password], async function(err, result) {
-                    if (err) response = err;
-                    console.log("d");
-                    if(result.affectedRows==1){
+            console.log(result);
+            if (result[0]['number_of_rows'] < 1) {
+                await db.query('INSERT INTO `customer`(`email`, `first_name`, `last_name`, `password`) VALUES (?,?,?,?)', [user.email, user.first_name, user.last_name, user.password], async function (err, result) {
+                    if (err)
+                        response = err;
+    
+                    if (result.affectedRows == 1) {
                         response = true;
-                        console.log("e");
-                        await db.end( async function(err) {
-                            if (err) {
-                               console.log('error:' + err.message);
-                            }
-                            await console.log('Close the database connection.');
-                          });
                     }
-                  });
-                  console.log("f");
-                  console.log(response);
-                  
-            }else{
-                console.log("g");
+                });
+            } else {
                 response = false;
             }
-            console.log("h");
-          });
-          console.log("i");
-          console.log(res);
-          
+    
+        });
 
         
-
-          return response
-            
+        console.log(response);
+        return response; 
     }
 
     async addUser(first_name,last_name,email,password){
