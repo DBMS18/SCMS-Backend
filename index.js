@@ -1,10 +1,3 @@
-/// these are sample codes
-/// if you need you can change these
-
-
-
-////---------------------------------------------------------////
-
 const express = require('express'),
 http = require('http');
 const HttpStatus = require('http-status');
@@ -17,13 +10,7 @@ const port = 5000;
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
-// app.use((req, res, next) => {
-//     console.log(req.headers);
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/html');
-//     res.end('<html><body><h1>Hello world!</h1></body></html>');
-// });
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const server = http.createServer(app);
 
@@ -31,13 +18,12 @@ server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-// //user Routes
-// const usersRoutes = require('./routes/api/users');
-// app.use('/api', usersRoutes);
+const router = express.Router();
 
-// //guest Routes
-// const guestsRoutes = require('./routes/api/guests');
-// app.use('/api/guests', guestsRoutes);
+
+//All Routes
+const routes = require('./routes/index');
+app.use('/api', routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
