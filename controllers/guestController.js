@@ -21,13 +21,10 @@ function sleep(ms) {
 guestController.createAccount = async (req, res, next) => {
     try {
       console.log("object");
-        const user = new CustomerModel(null,req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
-        const response = await guest.createAccount(user);;
-  // console.log(1);
-  // await sleep(3000);
-  // console.log(2);
+        const customer = new CustomerModel(null,req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
+        const response = await guest.createAccount(customer);;
         
-        
+        console.log(response)
         if(response === true){
             const response = {
                 err: 0,
@@ -77,68 +74,58 @@ guestController.createAccount = async (req, res, next) => {
         
         let user = await guest.getUser(email);
         
-            if (user[0][0][0]===undefined) {
-              console.log("und"+user[0][0][0])
-            }else{
-              if (user[0][0][0].role_name===undefined) {
-                console.log(user[0][0][0])
-                console.log("customer")
-              } else {
-                console.log(user[0][0][0])
-                console.log(user[0][0][0].role_name)
-              }
-            }
-        //validate password
-        //console.log(user[0]);
-        let pass = user[0][0].password;
-        //console.log(pass);
-         let passw = md5(password);
-        let usr = user[0][0];
-        /*bcrypt.compare(passw, pass)
-        .then(isMatch => {
-            if(!isMatch){
-                const response = {
-                    err: 1,
-                    obj: {},
-                    msg: "Invalid password"
-                  }
-                  return res.json(response);
-            }
+        console.log(user);
+//         //validate password
+//         //console.log(user[0]);
+//         let pass = user[0][0].password;
+//         //console.log(pass);
+//         let passw = md5(password);
+//         let usr = user[0][0];
+//         /*bcrypt.compare(passw, pass)
+//         .then(isMatch => {
+//             if(!isMatch){
+//                 const response = {
+//                     err: 1,
+//                     obj: {},
+//                     msg: "Invalid password"
+//                   }
+//                   return res.json(response);
+//             }
             
-            jwt.sign(
-                {id: user.id},
-                config.get('jwtSecret'),
-                { expiresIn: 3600 },
-                (err, token) => {
-                    if(err) throw err;
-                    return res.json({
-                        token,
-                        user: user
-                    });
-                }
-            )
-        });
-*/    if (pass===passw){
-          jwt.sign(
-            {id: usr.id},
-            config.get('jwtSecret'),
-            { expiresIn: 3600 },
-            (err, token) => {
-                if(err) throw err;
-                return res.json({
-                    token,
-                    user: user
-                });
-            })
-            //console.log(usr.id);
-          }else{
-            const response = {
-              err: 1,
-              obj: {},
-              msg: "Invalid password"
-            }
-            return res.json(response);
-          }
+//             jwt.sign(
+//                 {id: user.id},
+//                 config.get('jwtSecret'),
+//                 { expiresIn: 3600 },
+//                 (err, token) => {
+//                     if(err) throw err;
+//                     return res.json({
+//                         token,
+//                         user: user
+//                     });
+//                 }
+//             )
+//         });
+// */    if (pass===passw){
+//           jwt.sign(
+//             {id: usr.id},
+//             config.get('jwtSecret'),
+//             { expiresIn: 3600 },
+//             (err, token) => {
+//                 if(err) throw err;
+//                 return res.json({
+//                     token,
+//                     user: user
+//                 });
+//             })
+//             //console.log(usr.id);
+//           }else{
+//             const response = {
+//               err: 1,
+//               obj: {},
+//               msg: "Invalid password"
+//             }
+//             return res.json(response);
+//           }
       
     }catch (err) {
       next(err);

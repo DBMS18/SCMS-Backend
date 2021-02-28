@@ -1,3 +1,5 @@
+const db = require('../../db/db')
+
 
 class CustomerDAO{
     constructor(){
@@ -8,8 +10,11 @@ class CustomerDAO{
         }
     }
 
-    static async createOneEntity(){
-
+    static async createOneEntity(customer){
+        const querry = 'CALL RegisterUser(?, ?, ?, ?, ?)';
+        const out = await db.query(querry,[customer.first_name, customer.last_name, customer.email, customer.password, customer.nic]);
+        console.log(esponse[0][0][0].id)
+        return out;
     }
 
     static async readAllEntity(){
@@ -31,3 +36,5 @@ class CustomerDAO{
         //return addline1,addline2,city
     }
 }
+
+module.exports = CustomerDAO;

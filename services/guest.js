@@ -1,49 +1,57 @@
-var db = require('../db/db');
-const bluebird = require('bluebird');
-//let mysql = require('mysql');
+const GuestQueryDAO = require("../models/dao/guestQueryDAO");
+const CustomerDAO = require('../models/dao/customerDAO');
 
 
 class Guest{
 
     constructor(){}
 
-    async createAccount(user){
-        let response = "";
-        console.log(user.email,user.password);
+    async createAccount(customer){
         try {
-            connection.query('select count(*) as number_of_rows from customer where email=?', [user.email]); 
-        } catch (error) {
-            console.log('caught exception!', error);
-        }
-        
-        console.log(rows);
-        await db.query('select count(*) as number_of_rows from customer where email=?', [user.email], async function (err, result) {
-            if (err) response = err;
-            console.log(result);
-            if (result[0]['number_of_rows'] < 1) {
-                await db.query('INSERT INTO `customer`(`email`, `first_name`, `last_name`, `password`) VALUES (?,?,?,?)', [user.email, user.first_name, user.last_name, user.password], async function (err, result) {
-                    if (err)
-                        response = err;
-    
-                    if (result.affectedRows == 1) {
-                        response = true;
-                    }
-                });
-            } else {
-                response = false;
+            var response = await CustomerDAO.createOneEntity(customer);
+            if (response[0][0][0].id==0) {
+                return false;
+            } else if (response[0][0][0].id > 0) {
+                return true;
+            } else{
+                return "";
             }
-    
-        });
-
-        
-        console.log(response);
-        return response; 
+        } catch (error) {
+            return "";
+        }
     }
 
     async getUser(email){
-        const querry = 'CALL login(?);';
-        const out = await db.query(querry,[email]);
-        return out;
+
+        try {
+            var response = await GuestQueryDAO.getUser(email);
+            
+            if (response[0][0].length==0) {
+                return null;
+            } else if (response[0][0][0].role_name == undefined) {
+                var user = {
+                    id: response[0][0][0].customer_id,
+                    password: response[0][0][0].password,
+                    email: response[0][0][0].email,
+                    role_name: 'customer',
+                    isAdmin:false
+                }
+                return user;
+            } else{
+                var user = {
+                    id : response[0][0][0].id,
+                    password : response[0][0][0].password,
+                    email : response[0][0][0].email,
+                    role_name : response[0][0][0].role_name,
+                    isAdmin: true
+                }
+                return user;
+            }
+
+        } catch (error) {
+            return undefined;
+        }
+        
     }
    
 
