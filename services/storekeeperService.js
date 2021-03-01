@@ -180,33 +180,35 @@ class StorekeeperService {
         }
     }
 
-    // async getAvailableTrucks(user_id) {
-    //     try {
+    async getAvailableTrucks(user_id) {
+        try {
 
-    //         const store_id = await QueryDAO.getStoreId(user_id);
-    //         //check following
-    //         // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-    //         // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
+            const store_id = await QueryDAO.getStoreId(user_id);
+            var trucks = await TruckDAO.getUnlockTrucks(store_id);
+            //check following
+            // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
+            // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
 
 
-    //         //return driver list
-    //         // [
-    //         //     {
-    //         //         truck_number: 1
-    //         //        
-    //         //     },
-    //         //     ..........
-    //         // ]
+            return trucks
+            // [
+            //     {
+            //         truck_number: 1,
+            //         capacity:23
+                   
+            //     },
+            //     ..........
+            // ]
 
-    //     } catch (error) {
+        } catch (error) {
 
-    //     }
-    // }
+        }
+    }
 
     
     //-------------------create duty ---------------------------
 
-    async createDutyRecord(user_id, route_id, driver_id, assistent_id, truck_number) {
+    async createDutyRecord(user_id, route_id, driver_id, assistent_id, truck_number,start_time) {
         try {
 
             const store_id = await QueryDAO.getStoreId(user_id);
@@ -216,15 +218,17 @@ class StorekeeperService {
             var mm = String(today.getMonth() + 1).padStart(2, '0');
             var yyyy = today.getFullYear();
             var dateNow = yyyy + '-' + mm + '-' + dd;
-            var currentTime = "Now Time"
+            var starting  =start_time + ":00";
 
-            let spendTime = await RouteDAO.getSpendTime(route_id);
+            var spendTime = await RouteDAO.getSpendTime(route_id);
 
-            let endTime = currentTime + spendTime;
+            var endTime = parseInt(start_time) + parseInt(spendTime);
+
+            var ending = endTime + ":00";
 
 
-            var duty_id = await DutyRecordDAO.createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number, endTime); //check result here
-           
+            var duty_id = await DutyRecordDAO.createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number,dateNow, starting,ending); //check result here
+            await QueryDAO.changeOtherEmployeeStatus(store_id,dateNow);
             await StorekeeperDutyRecordDAO.createOneEntity(user_id,duty_id);
 
             return duty_id;
@@ -286,6 +290,34 @@ class StorekeeperService {
             await OrderDutyRecordDAO.createOneEntity(order_id, duty_id);
 
             await OrderDAO.changeOrderStatus(order_id, "Send for Delivering");
+
+            return "Mark Success";
+
+        } catch (error) {
+
+        }
+    }
+
+    async getDutySetOff(user_id) {
+        try {
+            
+            const store_id = await QueryDAO.getStoreId(user_id);
+
+            const duty_list = await QueryDAO.getMyStoreSetOff(store_id);
+
+            return duty_list;
+
+        } catch (error) {
+
+        }
+    }
+
+    async markDutyFinished(duty_id) {
+        try {
+
+
+            await DutyRecordDAO.markDutyOff(duty_id);
+
 
             return "Mark Success";
 

@@ -29,6 +29,10 @@ class OrderDAO{
     }
 
     static async changeOrderStatus(orderId,newState){
+        const query  = `UPDATE order SET status = ? WHERE order_id = ? `;
+        await db.query(query,[newState,orderId]);
+        
+        return  "mark success";
         // return success msg
     }
     static async getAllUnReceviedOrders(){
