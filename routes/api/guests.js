@@ -6,6 +6,7 @@ const customerController = require('../../controllers/customerController.js');
 
 //guest routes
 router.get('/get-products',  customerController.getProductList);
+router.get('/search-products',  customerController.searchProductList);
 router.post('/registration', guestController.createAccount);
 router.get('/auth/login', guestController.login);
 

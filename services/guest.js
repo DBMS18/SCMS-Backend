@@ -9,10 +9,10 @@ class Guest{
     async createAccount(customer){
         try {
             var response = await CustomerDAO.createOneEntity(customer);
-            if (response[0][0][0].id==0) {
-                return false;
-            } else if (response[0][0][0].id > 0) {
+            if (response[0][0][0].email_exist==null && response[0][0][0].id>0) {
                 return true;
+            } else if (response[0][0][0].email_exist==customer.email) {
+                return false;
             } else{
                 return "";
             }

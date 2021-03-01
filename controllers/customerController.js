@@ -13,8 +13,8 @@ function sleep(ms) {
 //customer functions
 customerController.getProductList = async (req, res, next) => {
     try {
-        
-        const product_list = await customerServices.getProductList();
+        const keyword = "";
+        const product_list = await customerServices.getProductList(keyword);
         console.log("product_list");
         if(product_list.length > 0){
           const response = {
@@ -36,6 +36,34 @@ customerController.getProductList = async (req, res, next) => {
       next(err);
     }
     
+};
+
+customerController.searchProductList = async (req, res, next) => {
+  try {
+    const keyword = req.query.keyword;
+    console.log("sa"+keyword)
+      const product_list = await customerServices.getProductList(keyword);
+      console.log("product_list");
+      if(product_list.length > 0){
+        const response = {
+          err: 0,
+          obj: product_list,//should get object list
+          msg: ""
+        }
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No Poduct Available"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
 };
 
 

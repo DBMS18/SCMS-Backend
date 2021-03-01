@@ -10,9 +10,9 @@ class CustomerService {
 
     }
 
-    async getProductList() { 
+    async getProductList(keyword) { 
         try {
-            var productList = await ProductDAO.readAllEntity();
+            var productList = await ProductDAO.readAllEntity(keyword);
 
             return productList;
 

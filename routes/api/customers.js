@@ -8,7 +8,8 @@ const customerController = require('../../controllers/customerController.js');
 //customerController routes
 router.get('', authorization); // get customer dashboard
 
-router.get('/get-products',  customerController.getProductList);
+router.get('/get-products', authorization, customerController.getProductList);
+router.get('/search-products', authorization, customerController.searchProductList);
 router.get('/get-routes', authorization, customerController.getRouteList);
 router.post('/checkout-cart', authorization,customerController.checkOutMyCart);
 

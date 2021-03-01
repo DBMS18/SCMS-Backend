@@ -13,7 +13,6 @@ class CustomerDAO{
     static async createOneEntity(customer){
         const querry = 'CALL RegisterUser(?, ?, ?, ?, ?)';
         const out = await db.query(querry,[customer.first_name, customer.last_name, customer.email, customer.password, customer.nic]);
-        console.log(esponse[0][0][0].id)
         return out;
     }
 

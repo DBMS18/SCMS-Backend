@@ -1,7 +1,7 @@
 let CustomerModel = require('../models/customer-model');
 const Guest = require('../services/guest.js');
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const config = require('config');
 const e = require('express');
 // const md5 = require('md5');
@@ -20,33 +20,39 @@ function sleep(ms) {
 
 guestController.createAccount = async (req, res, next) => {
     try {
-      console.log("object");
         const customer = new CustomerModel(null,req.body.nic,req.body.email,req.body.pwrd,req.body.firstname,req.body.lastname);
-        const response = await guest.createAccount(customer);;
-        
-        console.log(response)
-        if(response === true){
-            const response = {
-                err: 0,
-                obj: true,
-                msg: "User successfully registered"
-              }
-              return res.json(response);
-        }else if(response === false){
-            const response = {
-                err: 0,
-                obj: false,
-                msg: "User already exists"
-              }
-              return res.json(response);
-        }else{
-            const response = {
-                err: 1,
-                obj: {},
-                msg: "Something is wrong"
-              }
-              return res.json(response);
-        }
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(customer.password, salt, (err, hash) => {
+              if(err) next(err);
+              customer.password = hash;
+              guest.createAccount(customer)
+                .then(response => {
+                  console.log("created : " + response)
+                  if(response === true){
+                    const response = {
+                        err: 0,
+                        obj: true,
+                        msg: "User successfully registered"
+                      }
+                      return res.json(response);
+                  }else if(response === false){
+                      const response = {
+                          err: 0,
+                          obj: false,
+                          msg: "User already exists"
+                        }
+                        return res.json(response);
+                  }else{
+                      const response = {
+                          err: 1,
+                          obj: {},
+                          msg: "Something is wrong"
+                        }
+                        return res.json(response);
+                  }
+                });
+            })
+        });
 
     } catch (err) {
       next(err);
@@ -75,6 +81,55 @@ guestController.createAccount = async (req, res, next) => {
         let user = await guest.getUser(email);
         
         console.log(user);
+        if (user==null) {
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "User does not exist"
+          }
+          console.log("user do not exist")
+          return res.json(response);
+        }else if(user.id>=0){
+          bcrypt.compare(password, user.password)
+            .then(isMatch => {
+                if(!isMatch){
+                  const response = {
+                    err: 1,
+                    obj: {},
+                    msg: "Password is invalid"
+                  }
+                  console.log("invalid password")
+                  return res.json(response);
+                };
+                
+                jwt.sign(
+                    {id: user.id},
+                    config.get('jwtSecret'),
+                    { expiresIn: 36000 },
+                    (err, token) => {
+                        if(err) next(err);
+                        const response = {
+                          err: 0,
+                          obj: {
+                            token: token,
+                            user: user
+                          },
+                          msg: "User successfully logged in"
+                        }
+                        console.log("logged in :" + user)
+                        return res.json(response);
+                    }
+                )
+            });
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "Something is wrong"
+          }
+          console.log("somthing is wrong")
+          return res.json(response);
+        }
 //         //validate password
 //         //console.log(user[0]);
 //         let pass = user[0][0].password;
@@ -92,19 +147,8 @@ guestController.createAccount = async (req, res, next) => {
 //                   return res.json(response);
 //             }
             
-//             jwt.sign(
-//                 {id: user.id},
-//                 config.get('jwtSecret'),
-//                 { expiresIn: 3600 },
-//                 (err, token) => {
-//                     if(err) throw err;
-//                     return res.json({
-//                         token,
-//                         user: user
-//                     });
-//                 }
-//             )
-//         });
+            
+        // });
 // */    if (pass===passw){
 //           jwt.sign(
 //             {id: usr.id},

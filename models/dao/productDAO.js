@@ -12,9 +12,11 @@ class ProductDAO{
 
     }
 
-    static async readAllEntity(){
-        const query  = `SELECT * FROM product`;
-        const out = await db.query(query);
+    static async readAllEntity(keyword){
+        console.log("object")
+        const query  = `select * from product where type like ?`;
+        const out = await db.query(query,['%'+keyword+'%']);
+        console.log("sdg" + out[0])
         return out[0];
     }
 
