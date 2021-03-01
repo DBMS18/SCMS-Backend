@@ -13,8 +13,9 @@ class QueryDAO{
     }
 
     static async getRouteForOrdersByStore(store_id){
+
         const query  = `SELECT route_id,route_name FROM route WHERE store_id = ? `;
-        const out = await db.query(query,[user_id]);
+        const out = await db.query(query,[store_id]);
         console.log(out[0]);
         return out[0];
         //join order and router - return route id/name -  where store_id = ?
@@ -34,8 +35,8 @@ class QueryDAO{
     static async getStoreId(user_id){
         const query  = `SELECT store_id FROM storekeeper WHERE user_id = ? `;
         const out = await db.query(query,[user_id]);
-        console.log(out[0]);
-        return out[0];
+        
+        return out[0][0];
         //storekeeper is view
     }
     static async getMyStoreSetOff(store_id){

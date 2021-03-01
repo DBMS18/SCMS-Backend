@@ -5,7 +5,7 @@ const OrderStoreDAO = require("../models/dao/order_storeDAO");
 const DriverDAO = require("../models/dao/driverDAO");
 const AssistantDAO = require("../models/dao/assistantDAO");
 const OrderDutyRecordDAO  = require("../models/dao/order_dutyRecordDAO.js");
-const UserDAO = require("../models/dao/userDAO.js");
+const TruckDAO = require("../models/dao/TruckDAO.js");
 const QueryDAO = require("../models/dao/QueryDAO");
 const DutyRecordDAO = require("../models/dao/dutyRecordDAO.js");
 const StorekeeperDutyRecordDAO = require("../models/dao/storekeeper_dutyRecordDAO.js");
@@ -87,6 +87,7 @@ class StorekeeperService {
     }
 
 
+
     //-----------------------task 2--------------------------
 
     async getAvailablerRoutes(user_id) {
@@ -94,16 +95,14 @@ class StorekeeperService {
 
             const store_id = await QueryDAO.getStoreId(user_id);
             
-            var route_list = await QueryDAO.getRouteForOrdersByStore(store_id);
-            
-
+            var route_list = await QueryDAO.getRouteForOrdersByStore(store_id.store_id);
 
             return route_list;
 
             // [
             //     {
             //         route_id:1,
-            //         discription: Wadduwa
+            //         route_name: Wadduwa
             //     }
             // ]
 
@@ -116,19 +115,46 @@ class StorekeeperService {
 
     async getAvailableDrivers(user_id) {
         try {
+
+            var curr = new Date; 
+            var first = curr.getDate() - curr.getDay(); 
+            var firstday = new Date(curr.setDate(first));
+            var dd = String(firstday.getDate()).padStart(2, '0');
+            var mm = String(firstday.getMonth() + 1).padStart(2, '0');
+            var yyyy = firstday.getFullYear();
+            var weekStartDate = yyyy + '-' + mm + '-' + dd;
+
+
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var dateNow = yyyy + '-' + mm + '-' + dd;
+
+            console.log(weekStartDate)
+
             const store_id = await QueryDAO.getStoreId(user_id);
             const driverList = []
 
 
-            var drivers = await DriverDAO.getUnlockDrivers(store_id)
+            var drivers = await DriverDAO.getUnlockDrivers(store_id.store_id)
+            
             for (let i = 0; i < drivers.length; i++) {
+
                 var driver = drivers[i];
 
                 let driver_id = driver.driver_id;
-                let driver_name = driver.driver_name;
+                let driver_name = driver.first_name;
 
-                var OneDriver = {driver_id,driver_name}
-                driverList.push(OneDriver);
+                var times = await DriverDAO.getWeekHours(driver.driver_id,weekStartDate,dateNow)
+
+                if(times < 40){
+                    var OneDriver = {driver_id,driver_name}
+                    driverList.push(OneDriver);
+                }
+                
+
+                
             }
             //get working hours < 40 drivers in Store = store_id
 
@@ -155,12 +181,12 @@ class StorekeeperService {
       
 
             const assistantList = [];
-            var assistants = await AssistantDAO.getUnlocHalfLockkAssistant(store_id);
+            var assistants = await AssistantDAO.getUnlocHalfLockkAssistant(store_id.store_id);
             for (let i = 0; i < assistants.length; i++) {
                 var assistant = assistants[i];
 
                 let assistant_id = assistant.assistant_id;
-                let assistant_name = assistant.assistant_name;
+                let assistant_name = assistant.first_name;
 
                 var OneAssistant = {assistant_id,assistant_name}
                 assistantList.push(OneAssistant);
@@ -184,10 +210,8 @@ class StorekeeperService {
         try {
 
             const store_id = await QueryDAO.getStoreId(user_id);
-            var trucks = await TruckDAO.getUnlockTrucks(store_id);
-            //check following
-            // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-            // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
+            var trucks = await TruckDAO.getUnlockTrucks(store_id.store_id);
+            console.log(trucks);
 
 
             return trucks
@@ -303,7 +327,7 @@ class StorekeeperService {
             
             const store_id = await QueryDAO.getStoreId(user_id);
 
-            const duty_list = await QueryDAO.getMyStoreSetOff(store_id);
+            const duty_list = await QueryDAO.getMyStoreSetOff(store_id.store_id);
 
             return duty_list;
 

@@ -16,7 +16,7 @@ router.get('/available-routes/:user_id', storekeeperController.getAvailableRoute
 
 router.get('/available-drivers/:user_id', storekeeperController.getAvailableDrivers);
 router.get('/available-assistant/:user_id', storekeeperController.getAvailableAssistants);
-router.get('available-trucks/:user_id', storekeeperController.getAvailableTrucks);
+router.get('/available-trucks/:user_id', storekeeperController.getAvailableTrucks);
 
 
 router.post('/create-duty',storekeeperController.createDutyRecord);

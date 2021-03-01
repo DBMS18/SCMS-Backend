@@ -1,4 +1,4 @@
-
+const db = require('../../db/db')
 class TruckDAO{
     constructor(){
         try {
@@ -28,10 +28,16 @@ class TruckDAO{
         
     }
     static async getUnlockTrucks(store_id){
-        const query  = `SELECT truck_number,capacity FROM truck WHERE store_id = ? AND status = "unlock" `;
-        const out = await db.query(query,[store_id]);
-        console.log(out[0]);
-        return out[0];
+        try {
+            const query  = "SELECT truck_number,capacity FROM `truck` where status = 'unlock' AND store_id = ?";
+            const out = await db.query(query,[store_id]);
+            console.log(out[0]);
+            return out[0];
+            
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
 }
 

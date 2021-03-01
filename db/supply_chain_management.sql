@@ -56,6 +56,10 @@
 -- END;
 -- $$
 
+
+-----------------------------------------
+
+
 -- delimiter $$
 -- CREATE PROCEDURE mark_duty_off(
 --     dutyId VARCHAR(10)
@@ -70,26 +74,19 @@
 
 -- --//----------------------Function---------------
 
--- delimiter $$
--- CREATE FUNCTION generate_endtime (routeId integer,startTime time)
---     RETURNS time
--- READS SQL DATA
--- BEGIN
--- 	DECLARE end_time time;
---     SELECT ADDTIME(startTime,'SELECT route_time FROM route WHERE route_id = routeId');
---     RETURN end_time;
--- END
--- $$
+
+
 
 -- --//------------------------Views--------------------------
 
--- create view driver as select user_id as driver_id,frist_name,store_id,status from user join role using (role_id) where role_name = 'driver' ;
--- create view assistant as select user_id as assistant_id,frist_name,store_id,status from user join role using (role_id) where role_name = 'assistant' ;
+-- create view driver as select user_id as driver_id,first_name,store_id,status from users join role using (role_id) where role_name = 'driver' ;
 
--- create view storekeeper as select user_id as storekeeper_id,frist_name,store_id from user join role using (role_id) where role_name = 'storekeeper' ;
+-- create view assistant as select user_id as assistant_id,first_name,store_id,status from users join role using (role_id) where role_name = 'assistant' ;
+
+-- create view storekeeper as select user_id,first_name,store_id from users join role using (role_id) where role_name = 'storekeeper' ;
 
 
 
-
+-- SELECT SUM(time) FROM `duty_record` join 'route' using (route_id) WHERE date > weekstart AND date <= currentdate AND status = "arrived" AND driver_id = 123
 
 
