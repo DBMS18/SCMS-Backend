@@ -1,20 +1,17 @@
 const express = require('express');
 const router = express.Router();
+
 const authorization = require('../../middlewares/auth');
 
 const customerController = require('../../controllers/customerController.js');
 
 //customerController routes
-router.get('/api/customer', authorization); // get customer dashboard
+router.get(''); // get customer dashboard
 
-router.get('/api/customer/get-products', authorization, customerController.getProductList);
-router.get('/api/customer/get-routes', authorization, customerController.getRouteList);
-router.post('/api/cutomer/checkout-cart', authorization,customerController.checkOutMyCart);
-
-
-router.get('/api/customer/get-orders/:customerId', authorization, customerController.getMyOrderList);
-router.get('/api/customer/mark-delivery/:customerId/:orderId', authorization, customerController.markDelivering);
-
-
+router.get('/get-products',  customerController.getProductList);
+router.get('/get-routes', customerController.getRouteList);
+router.post('/checkout-cart',customerController.checkOutMyCart);
+router.get('/get-orders/:customerId/:status',customerController.getMyOrderList);
+router.put('/mark-delivery/:customerId/:orderId', customerController.markDelivering);
 
 module.exports = router;
