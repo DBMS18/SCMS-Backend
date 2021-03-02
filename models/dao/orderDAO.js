@@ -8,6 +8,12 @@ class OrderDAO{
         }
     }
 
+    static async getNewPaymentID(){
+        const querry = 'select order_id from orders order by order_id DESC limit 1;';
+        const out = await db.query(querry);
+        return out[0][0].order_id;
+    }
+
     static async createOneEntity(customer_id,payment_id,dateNow,status,total_amount,route_id){
 
     }
@@ -29,8 +35,13 @@ class OrderDAO{
     }
 
     static async changeOrderStatus(orderId,newState){
+        const query  = `UPDATE order SET status = ? WHERE order_id = ? `;
+        await db.query(query,[newState,orderId]);
+        
+        return  "mark success";
         // return success msg
     }
+
     static async getAllUnReceviedOrders(){
         // return "Assign to train" orders
     }

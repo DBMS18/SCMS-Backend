@@ -5,6 +5,8 @@ const ProductDAO = require("../models/dao/productDAO.js");
 const OrderDAO = require("../models/dao/orderDAO.js");
 const ProductOrderDAO = require("../models/dao/orderDAO.js");
 const QueryDAO = require("../models/dao/QueryDAO.js");
+const CustomerQuerryDAO = require("../models/dao/customerQuerryDAO");
+
 class CustomerService {
     constructor() {
 
@@ -26,10 +28,8 @@ class CustomerService {
     //get route list -ok
     async getRouteList() {
         try {
-
             var routes = await QueryDAO.getAllRoutes();
-        
-
+            console.log(routes)
             return routes;
             //    [
             //        {
@@ -41,7 +41,7 @@ class CustomerService {
             //    ]
 
         } catch (error) {
-
+            return error
         }
 
     }
@@ -51,53 +51,36 @@ class CustomerService {
 
     
     //---------------------------Checkout process-------------------------
-    async checkOutMyCart(paid_amount, customer_id, item_list, route_id) {
+    async checkOutMyCart(today,paid_amount,payment_method,customer_id,total_amount,street_number,street_name,city,zip,expected_date,route_id,products) {
         //other way - can make procedure/transaction to update all table
         try {
+            console.log("object")
+            var paymentId = await PaymentDAO.getNewPaymentID();
+            var orderId =await  OrderDAO.getNewPaymentID();
+            console.log("payment")
+            console.log(paymentId+1)
+            console.log(today)
+            console.log("time")
+            console.log(payment_method)
+            console.log(paid_amount)
 
-            var paymentId = this.makeOneTimePayment(paid_amount);
-            if (paymentId != null) {
-                var total_amount = item_list.length;
-                var order_id = this.createNewOrder(customer_id, total_amount, paymentId, route_id);
-                if (order_id != null) {
-                    let result = this.markProductsInOrder(order_id, item_list);
-
-                    return result;
-                }
-                else {
-                    return "Paymet success.Order Failed";
-                }
-            }
-            else {
-                return "Payment Failed";
-            }
-
-        } catch (error) {
-
-        }
-
-    }
-
-    async makeOneTimePayment(paid_amount) {
-        try {
-            var payment_method = "online";
-
-            var today = new Date()
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0');
-            var yyyy = today.getFullYear();
-            var dateNow = yyyy + '-' + mm + '-' + dd;
-
-            var timeNow = "10:10:00" //get current time
-
-
-
-            await PaymentDAO.makeOneTimePayment(paid_amount, payment_method, dateNow, timeNow);
-            payment_id = await PaymentDAO.getPaymentId(paid_amount, payment_method, dateNow, timeNow);
-
-
-            return payment_id;
-
+            console.log("orders")
+            console.log(orderId+1)
+            console.log("created")
+            console.log(today)
+            console.log(total_amount)
+            console.log(paymentId+1)
+            console.log(customer_id)
+            console.log("street")
+            console.log(street_name)
+            console.log(street_number)
+            console.log("street_id")
+            console.log("address")
+            console.log(city)
+            console.log(zip)
+            console.log(expected_date)
+            console.log(route_id)
+            console.log(products)
 
         } catch (error) {
 
@@ -105,30 +88,57 @@ class CustomerService {
 
     }
 
-    async createNewOrder(customer_id, total_amount, payment_id, route_id) {
-        try {
-            var status = "Order Created";
+    // async makeOneTimePayment(paid_amount) {
+    //     try {
+    //         var payment_method = "online";
 
-            var today = new Date()
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0');
-            var yyyy = today.getFullYear();
-            var dateNow = yyyy + '-' + mm + '-' + dd;
+    //         var today = new Date()
+    //         var dd = String(today.getDate()).padStart(2, '0');
+    //         var mm = String(today.getMonth() + 1).padStart(2, '0');
+    //         var yyyy = today.getFullYear();
+    //         var dateNow = yyyy + '-' + mm + '-' + dd;
 
-
-
-            await OrderDAO.createOneEntity(customer_id, payment_id, dateNow, status, total_amount, route_id);
-            order_id = await OrderDAO.getOrderId(customer_id, payment_id, dateNow, status, total_amount);
+    //         var timeNow = "10:10:00" //get current time
 
 
-            return order_id;
+
+    //         await PaymentDAO.makeOneTimePayment(paid_amount, payment_method, dateNow, timeNow);
+    //         payment_id = await PaymentDAO.getPaymentId(paid_amount, payment_method, dateNow, timeNow);
 
 
-        } catch (error) {
+    //         return payment_id;
 
-        }
 
-    }
+    //     } catch (error) {
+
+    //     }
+
+    // }
+
+    // async createNewOrder(customer_id, total_amount, payment_id, route_id) {
+    //     try {
+    //         var status = "Order Created";
+
+    //         var today = new Date()
+    //         var dd = String(today.getDate()).padStart(2, '0');
+    //         var mm = String(today.getMonth() + 1).padStart(2, '0');
+    //         var yyyy = today.getFullYear();
+    //         var dateNow = yyyy + '-' + mm + '-' + dd;
+
+
+
+    //         await OrderDAO.createOneEntity(customer_id, payment_id, dateNow, status, total_amount, route_id);
+    //         order_id = await OrderDAO.getOrderId(customer_id, payment_id, dateNow, status, total_amount);
+
+
+    //         return order_id;
+
+
+    //     } catch (error) {
+
+    //     }
+
+    // }
 
     async markProductsInOrder(order_id, item_list) {
         try {

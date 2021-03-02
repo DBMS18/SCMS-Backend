@@ -4,18 +4,28 @@ let customerServices = new CustomerService();
 
 const customerController  = {};
 Products = require('./ProductFile');
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-} 
 
 //customer functions
+
+
+customerController.authCustomer = async (req, res, next) => {
+  try {
+    const response = {
+      err: 0,
+      obj: {},
+      msg: "Auto logged in"
+    }
+    return res.json(response);
+  } catch (error) {
+    next(err);
+  }
+}
+
 customerController.getProductList = async (req, res, next) => {
     try {
+        console.log("get")
         const keyword = "";
         const product_list = await customerServices.getProductList(keyword);
-        console.log("product_list");
         if(product_list.length > 0){
           const response = {
             err: 0,
@@ -41,7 +51,7 @@ customerController.getProductList = async (req, res, next) => {
 customerController.searchProductList = async (req, res, next) => {
   try {
     const keyword = req.query.keyword;
-    console.log("sa"+keyword)
+    console.log("search"+keyword)
       const product_list = await customerServices.getProductList(keyword);
       console.log("product_list");
       if(product_list.length > 0){
@@ -69,9 +79,8 @@ customerController.searchProductList = async (req, res, next) => {
 
 customerController.getRouteList = async (req, res, next) => {
   try {
-      
-      const route_list = await customerServices.getRouteList();
-      
+      console.log("object")
+      var route_list = await customerServices.getRouteList();
       if(route_list.length > 0){
         const response = {
           err: 0,
@@ -98,36 +107,58 @@ customerController.getRouteList = async (req, res, next) => {
 
 customerController.checkOutMyCart = async (req, res, next) => {
     try {
-        var paid_amount = req.body.paid_amount;
-        var customer_id = req.body.customer_id;
-        var item_list = req.body.item_list;
-        var route_id = req.body.route_id;
-        var address = req.body.address; // should enter
+      console.log("asdgd")
+      console.log(req.body)
+      var datetime = new Date();
 
-        const resultMsg = await customerServices.checkOutMyCart(paid_amount,customer_id,item_list,route_id);
-        
-        if(resultMsg === "Payment Failed"){
-          const response = {
-            err: 1,
-            obj: {},
-            msg: "Payment Failed"
-          }
-          return res.json(response);
-        }else if(resultMsg === "Paymet success.Order Failed"){
-          const response = {
-            err: 1,
-            obj: {},
-            msg: "Paymet success. Order not success"
-          }
-          return res.json(response);
-        }else{
-          const response = {
-            err: 0,
-            obj: {},
-            msg: "Order success"
-          }
-          return res.json(response); 
+      var today = datetime.toISOString().slice(0,10);
+
+      var paid_amount = req.body.fields.total;
+      var payment_method = req.body.fields.payment_method;
+
+      var customer_id = req.user;
+      var total_amount = 0;
+      var street_number = req.body.fields.street_number;
+      var street_name = req.body.fields.street_name;
+      var city = req.body.fields.city;
+      var zip = req.body.fields.zip;
+      var expected_date = req.body.fields.date;
+      var route_id = req.body.fields.route;
+
+      var products = req.body.products.map((product)=>{
+        const p = {
+          product_id:product.product_id,
+          ordered_quantity:product.selected,
+          total_capacity:product.selected*product.capacity
         }
+        total_amount = total_amount + p.total_capacity;
+        return p;
+      })
+
+      const resultMsg = await customerServices.checkOutMyCart(today,paid_amount,payment_method,customer_id,total_amount,street_number,street_name,city,zip,expected_date,route_id,products);
+      
+      // if(resultMsg === "Payment Failed"){
+      //   const response = {
+      //     err: 1,
+      //     obj: {},
+      //     msg: "Payment Failed"
+      //   }
+      //   return res.json(response);
+      // }else if(resultMsg === "Paymet success.Order Failed"){
+      //   const response = {
+      //     err: 1,
+      //     obj: {},
+      //     msg: "Paymet success. Order not success"
+      //   }
+      //   return res.json(response);
+      // }else{
+        const response = {
+          err: 0,
+          obj: {},
+          msg: "Order success"
+        }
+        return res.json(response); 
+      // }
         
     } catch (err) {
       next(err);

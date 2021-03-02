@@ -16,7 +16,7 @@ router.get('/available-routes/:user_id', storekeeperController.getAvailableRoute
 
 router.get('/available-drivers/:user_id', storekeeperController.getAvailableDrivers);
 router.get('/available-assistant/:user_id', storekeeperController.getAvailableAssistants);
-// router.get('available-trucks/:user_id', authorization, storekeeperController.getAvailableTrucks);
+router.get('/available-trucks/:user_id', storekeeperController.getAvailableTrucks);
 
 
 router.post('/create-duty',storekeeperController.createDutyRecord);
@@ -25,9 +25,10 @@ router.get('/received-orders/:user_id/:route_id',storekeeperController.getRecevi
 
 router.post('/order-markas-send',storekeeperController.markAsSendForDelivering);
 
+router.get('/duty-set-off/:user_id',storekeeperController.getDutySetOff)
+// router.post('/duty-finished',storekeeperController.markDutyFinished)
 
-
-router.get('/test/:user_id', storekeeperController.mockFunctions);// authorization should add
+// router.get('/test/:user_id', storekeeperController.mockFunctions) // authorization should add
 
 
 

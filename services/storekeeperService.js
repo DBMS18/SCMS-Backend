@@ -5,7 +5,7 @@ const OrderStoreDAO = require("../models/dao/order_storeDAO");
 const DriverDAO = require("../models/dao/driverDAO");
 const AssistantDAO = require("../models/dao/assistantDAO");
 const OrderDutyRecordDAO  = require("../models/dao/order_dutyRecordDAO.js");
-const UserDAO = require("../models/dao/userDAO.js");
+const TruckDAO = require("../models/dao/truckDAO");
 const QueryDAO = require("../models/dao/QueryDAO");
 const DutyRecordDAO = require("../models/dao/dutyRecordDAO.js");
 const StorekeeperDutyRecordDAO = require("../models/dao/storekeeper_dutyRecordDAO.js");
@@ -87,23 +87,21 @@ class StorekeeperService {
     }
 
 
-    //-----------------------task 2--------------------------
+   //-----------------------task 2--------------------------
 
-    async getAvailablerRoutes(user_id) {
+   async getAvailablerRoutes(user_id) {
         try {
 
             const store_id = await QueryDAO.getStoreId(user_id);
             
-            var route_list = await QueryDAO.getRouteForOrdersByStore(store_id);
-            
-
+            var route_list = await QueryDAO.getRouteForOrdersByStore(store_id.store_id);
 
             return route_list;
 
             // [
             //     {
             //         route_id:1,
-            //         discription: Wadduwa
+            //         route_name: Wadduwa
             //     }
             // ]
 
@@ -116,19 +114,46 @@ class StorekeeperService {
 
     async getAvailableDrivers(user_id) {
         try {
+
+            var curr = new Date; 
+            var first = curr.getDate() - curr.getDay(); 
+            var firstday = new Date(curr.setDate(first));
+            var dd = String(firstday.getDate()).padStart(2, '0');
+            var mm = String(firstday.getMonth() + 1).padStart(2, '0');
+            var yyyy = firstday.getFullYear();
+            var weekStartDate = yyyy + '-' + mm + '-' + dd;
+
+
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var dateNow = yyyy + '-' + mm + '-' + dd;
+
+            console.log(weekStartDate)
+
             const store_id = await QueryDAO.getStoreId(user_id);
             const driverList = []
 
 
-            var drivers = await DriverDAO.getUnlockDrivers(store_id)
+            var drivers = await DriverDAO.getUnlockDrivers(store_id.store_id)
+            
             for (let i = 0; i < drivers.length; i++) {
+
                 var driver = drivers[i];
 
                 let driver_id = driver.driver_id;
-                let driver_name = driver.driver_name;
+                let driver_name = driver.first_name;
 
-                var OneDriver = {driver_id,driver_name}
-                driverList.push(OneDriver);
+                var times = await DriverDAO.getWeekHours(driver.driver_id,weekStartDate,dateNow)
+
+                if(times < 40){
+                    var OneDriver = {driver_id,driver_name}
+                    driverList.push(OneDriver);
+                }
+                
+
+                
             }
             //get working hours < 40 drivers in Store = store_id
 
@@ -151,19 +176,42 @@ class StorekeeperService {
 
     async getAvailableAssistants(user_id) {
         try {
+
+
+            var curr = new Date; 
+            var first = curr.getDate() - curr.getDay(); 
+            var firstday = new Date(curr.setDate(first));
+            var dd = String(firstday.getDate()).padStart(2, '0');
+            var mm = String(firstday.getMonth() + 1).padStart(2, '0');
+            var yyyy = firstday.getFullYear();
+            var weekStartDate = yyyy + '-' + mm + '-' + dd;
+
+
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var dateNow = yyyy + '-' + mm + '-' + dd;
+
             const store_id = await QueryDAO.getStoreId(user_id);
       
 
             const assistantList = [];
-            var assistants = await AssistantDAO.getUnlocHalfLockkAssistant(store_id);
+            var assistants = await AssistantDAO.getUnlocHalfLockkAssistant(store_id.store_id);
             for (let i = 0; i < assistants.length; i++) {
                 var assistant = assistants[i];
 
                 let assistant_id = assistant.assistant_id;
-                let assistant_name = assistant.assistant_name;
+                let assistant_name = assistant.first_name;
 
-                var OneAssistant = {assistant_id,assistant_name}
-                assistantList.push(OneAssistant);
+                var times = await AssistantDAO.getWeekHours(assistant_id,weekStartDate,dateNow);
+
+                if(times < 60){
+                    var OneAssistant = {assistant_id,assistant_name}
+                    assistantList.push(OneAssistant);
+                }
+
+                
             }
 
             return assistantList;
@@ -180,33 +228,33 @@ class StorekeeperService {
         }
     }
 
-    // async getAvailableTrucks(user_id) {
-    //     try {
+    async getAvailableTrucks(user_id) {
+        try {
 
-    //         const store_id = await QueryDAO.getStoreId(user_id);
-    //         //check following
-    //         // A driver should never be assigned to two consecutive Truck schedule and for assistant maximum consecutive turns is two.
-    //         // Total work hours per driver should not exceed 40 hrs/week and for an assistant it’s 60 hrs/week
+            const store_id = await QueryDAO.getStoreId(user_id);
+            var trucks = await TruckDAO.getUnlockTrucks(store_id.store_id);
+            console.log(trucks);
 
 
-    //         //return driver list
-    //         // [
-    //         //     {
-    //         //         truck_number: 1
-    //         //        
-    //         //     },
-    //         //     ..........
-    //         // ]
+            return trucks
+            // [
+            //     {
+            //         truck_number: 1,
+            //         capacity:23
+                   
+            //     },
+            //     ..........
+            // ]
 
-    //     } catch (error) {
+        } catch (error) {
 
-    //     }
-    // }
+        }
+    }
 
     
     //-------------------create duty ---------------------------
 
-    async createDutyRecord(user_id, route_id, driver_id, assistent_id, truck_number) {
+    async createDutyRecord(user_id, route_id, driver_id, assistent_id, truck_number,start_time) {
         try {
 
             const store_id = await QueryDAO.getStoreId(user_id);
@@ -216,15 +264,11 @@ class StorekeeperService {
             var mm = String(today.getMonth() + 1).padStart(2, '0');
             var yyyy = today.getFullYear();
             var dateNow = yyyy + '-' + mm + '-' + dd;
-            var currentTime = "Now Time"
-
-            let spendTime = await RouteDAO.getSpendTime(route_id);
-
-            let endTime = currentTime + spendTime;
+            
 
 
-            var duty_id = await DutyRecordDAO.createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number, endTime); //check result here
-           
+            var duty_id = await DutyRecordDAO.createOneEntity(store_id.store_id, route_id, driver_id, assistent_id, truck_number,dateNow, start_time); //check result here
+            await QueryDAO.changeOtherEmployeeStatus(store_id.store_id,dateNow);
             await StorekeeperDutyRecordDAO.createOneEntity(user_id,duty_id);
 
             return duty_id;
@@ -285,9 +329,23 @@ class StorekeeperService {
 
             await OrderDutyRecordDAO.createOneEntity(order_id, duty_id);
 
-            await OrderDAO.changeOrderStatus(order_id, "Send for Delivering");
+            await OrderDAO.changeOrderStatus(order_id, "sending");
 
             return "Mark Success";
+
+        } catch (error) {
+
+        }
+    }
+
+    async getDutySetOff(user_id) {
+        try {
+            
+            const store_id = await QueryDAO.getStoreId(user_id);
+
+            const duty_list = await QueryDAO.getMyStoreSetOff(store_id.store_id);
+
+            return duty_list;
 
         } catch (error) {
 

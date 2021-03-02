@@ -176,34 +176,34 @@ storekeeperController.getAvailableAssistants = async (req, res, next) => {
   
 };
 
-// storekeeperController.getAvailableTrucks = async (req, res, next) => {
-//   try {
+storekeeperController.getAvailableTrucks = async (req, res, next) => {
+  try {
             
-//     const user_id = req.params.user_id;
+    const user_id = req.params.user_id;
    
-//     const truck_list = await storekeeperServices.getAvailableTrucks(user_id);
+    const truck_list = await storekeeperServices.getAvailableTrucks(user_id);
     
-//     if(truck_list.length >0){
-//       const response = {
-//         err: 0,
-//         obj: truck_list,
-//         msg: ""
-//       }
-//       return res.json(response);
-//     }else{
-//       const response = {
-//         err: 1,
-//         obj: {},
-//         msg: "No truck available for your store"
-//       }
-//       return res.json(response);
-//     }
+    if(truck_list.length >0){
+      const response = {
+        err: 0,
+        obj: truck_list,
+        msg: ""
+      }
+      return res.json(response);
+    }else{
+      const response = {
+        err: 1,
+        obj: {},
+        msg: "No truck available for your store"
+      }
+      return res.json(response);
+    }
       
-//   } catch (err) {
-//     next(err);
-//   }
+  } catch (err) {
+    next(err);
+  }
   
-// };
+};
 
 
 
@@ -215,9 +215,10 @@ storekeeperController.createDutyRecord = async (req, res, next) => {
     const route_id = req.body.route_id;
     const driver_id = req.body.driver_id;
     const assistant_id = req.body.assistant_id ;
-    const truck_number = req.body.truck_number;  
+    const truck_number = req.body.truck_number;
+    const start_time =  req.body.start_time;
 
-    const duty_id = await storekeeperServices.createDutyRecord(user_id,route_id,driver_id,assistant_id,truck_number);
+    const duty_id = await storekeeperServices.createDutyRecord(user_id,route_id,driver_id,assistant_id,truck_number,start_time);
     
     if(duty_id != null){
       const response = {
@@ -245,7 +246,8 @@ storekeeperController.getReceviedOrdersFromStore = async (req, res, next) => {
   try {
             
     const user_id = req.params.user_id;  
-    const route_id = req.params.route_id;  
+    const route_id = req.params.route_id; 
+    
 
     const order_list = await storekeeperServices.getReceviedOrdersFromStore(user_id,route_id);
       
@@ -300,6 +302,37 @@ storekeeperController.markAsSendForDelivering = async (req, res, next) => {
   }
   
 };
+
+storekeeperController.getDutySetOff = async (req, res, next) => {
+  try {
+            
+    const user_id = req.params.duty_id;
+       
+    const duties = await storekeeperServices.getDutySetOff(user_id);
+    
+    if(duties.length >0){
+      const response = {
+        err: 0,
+        obj: duties,
+        msg: ""
+      }
+      return res.json(response);
+    }else{
+      const response = {
+        err: 1,
+        obj: {},
+        msg: "No duties set-off"
+      }
+      return res.json(response);
+    }  
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
+
+
 
 
 //-------------------------Mock function----------------------------------------------

@@ -16,7 +16,8 @@ function authorization(req, res, next){
     try{
         //verify token
         console.log(token);
-        const decoded = jwt.verify(token, config.get('jwtSecret'));
+        const decoded = jwt.verify(token, config.get('jwtSecret')).id;
+        console.log(decoded)
         if(!decoded){
             const response = {
                 err: 1,
