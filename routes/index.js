@@ -5,6 +5,7 @@ const router = express.Router();
 const storekeepers = require('./api/storekeepers');
 const customers = require('./api/customers');
 const guests = require('./api/guests');
+const managerRoutes = require('./api/manager');
 
 
 console.log("model index call");
@@ -18,10 +19,7 @@ router.use('/customer', customers);
 // guests routes
 router.use('/guests', guests);
 
-// //user event routes
-// router.use('/events', userRoutes);
-
-// //user event membership routes
-// router.use('/memberships', userRoutes);
+//manager routes
+router.use('/manager', managerRoutes);
 
 module.exports = router;

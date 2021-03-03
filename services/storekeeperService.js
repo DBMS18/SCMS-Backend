@@ -265,7 +265,11 @@ class StorekeeperService {
             var yyyy = today.getFullYear();
             var dateNow = yyyy + '-' + mm + '-' + dd;
             
-
+            if (start_time<10) {
+                start_time = "0"+start_time+":00:00";
+            }else{
+                start_time = start_time+":00:00";
+            }
 
             var duty_id = await DutyRecordDAO.createOneEntity(store_id.store_id, route_id, driver_id, assistent_id, truck_number,dateNow, start_time); //check result here
             await QueryDAO.changeOtherEmployeeStatus(store_id.store_id,dateNow);
@@ -285,7 +289,7 @@ class StorekeeperService {
           
             
             var OurStoreOrdersList = [] 
-            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id,route_id); 
+            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id.store_id,route_id); 
             
             for (let i = 0; i < allOrdersList.length; i++) {
                 var order = allOrdersList[i];

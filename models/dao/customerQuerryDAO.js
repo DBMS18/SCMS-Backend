@@ -55,7 +55,7 @@ console.log("address doen : " , address_id)
                 return {err:1, code:10};
             }
 console.log("address added")
-            const order = await db.query("INSERT INTO `orders`(`order_id`, `status`, `date`, `total_amount`, `payment_id`, `customer_id`, `address_id`, `expected_date`, `route_id`) VALUES (?,?,?,?,?,?,?,?,?);",[orderId,"created",today,total_amount,paymentId,customer_id,address_id,expected_date,route_id]);
+            const order = await db.query("INSERT INTO `orders`(`order_id`, `status`, `date`, `total_amount`, `payment_id`, `customer_id`, `address_id`, `expected_date`, `route_id`) VALUES (?,?,?,?,?,?,?,?,?);",[orderId,"setoff",today,total_amount,paymentId,customer_id,address_id,expected_date,route_id]);
             if (order[0].affectedRows!=1) {
                 await db.query("ROLLBACK;");
                 return {err:1, code:3};
