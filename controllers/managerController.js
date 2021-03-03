@@ -130,6 +130,35 @@ managerController.getAllRecords= async(req,res,next) =>{
     }
     
 };
+
+managerController.getAllTrains= async(req,res,next) =>{
+  console.log('get All Trains');
+  try {        
+      //const store_id = req.body.store_id;  // not sure   
+      const record_list = await managerServices.getAlltrainsWithRemainingCapacity();
+      
+      if(record_list.length){
+        const response = {
+          err: 0,
+          obj: record_list,//should get object list
+          msg: ""
+        }
+
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No Orders Assigned Yet"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
 managerController.removeTrainOrderRecord= async(req,res,next) =>{
     console.log('delete a record');
     try {        

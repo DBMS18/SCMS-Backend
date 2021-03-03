@@ -10,6 +10,7 @@ router.get('/dashboard/:user_id', managerController.dashboardDetails); //OK
 router.get('/assign-goods', managerController.getAllOrders_Trains); //ok
 router.post('/assign-goods', managerController.addTrainOrderRecord);  //OK
 
+router.get('/trains-list',managerController.getAllTrains); //OK
 
 
 

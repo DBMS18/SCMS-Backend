@@ -171,6 +171,24 @@ class ManagerService{
             console.log(error);
         }        
     }
+    async getAlltrainsWithRemainingCapacity(){
+        try {
+            let trainsList = await trainDAO.getAllTrains();
+            var trainsListWithRemaining =[];
+            for (let i = 0; i < trainsList.length; i++) {
+                var train = trainsList[i];
+
+                var totalVolume= await trainDAO.getTotalVolume(train.train_id);
+                var remaining =train.total_capacity- totalVolume;
+                var trainNew=[train,remaining];
+                trainsListWithRemaining.push(trainNew);
+            }
+            return trainsListWithRemaining;
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 }
 
 module.exports = ManagerService;

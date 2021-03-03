@@ -21,6 +21,19 @@ class TrainDAO{
         return train_list;
         
     }
+    static async getTotalVolume(train_id){
+        const query= 'SELECT sum(total_capacity) from orders LEFT outer join train_order on orders.order_id=train_order.order_id WHERE train_order.train_id=?;';
+        const out = await db.query(query,[train_id]);
+        var totalVolume=out;
+        return totalVolume;
+
+    }
+    static async getAllTrains(){
+        let train_list =[];
+        const query ="SELECT * FROM train;";
+        const out = await db.query(query,[store_id]);
+        train_list = out.rows;
+    }
 
 
 
