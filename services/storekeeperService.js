@@ -287,10 +287,9 @@ class StorekeeperService {
                 
                 let order_id = order.order_id;
                 let date = order.date;
-                let total_capacity = order.total_capacity;
+                let total_capacity = order.total_amount;
 
-                var product_list = await QueryDAO.getProductByOrderId(id);
-                    
+                var product_list = await QueryDAO.getProductByOrderId(order_id);
                 var OneOrder = { order_id, date, total_capacity, product_list }
                 OurStoreOrdersList.push(OneOrder);
             }

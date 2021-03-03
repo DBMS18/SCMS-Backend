@@ -23,9 +23,9 @@ router.get('/available-trucks/', authorization, storekeeperController.getAvailab
 
 router.post('/create-duty', authorization, storekeeperController.createDutyRecord);
 
-router.get('/received-orders/:user_id/:route_id',storekeeperController.getReceviedOrdersFromStore);
+router.get('/received-orders/:route_id', authorization, storekeeperController.getReceviedOrdersFromStore);
 
-router.post('/order-markas-send',storekeeperController.markAsSendForDelivering);
+router.post('/order-markas-send',authorization,storekeeperController.markAsSendForDelivering);
 
 router.get('/duty-set-off', authorization, storekeeperController.getDutySetOff)
 router.post('/duty-finished', authorization, storekeeperController.markDutyFinished)

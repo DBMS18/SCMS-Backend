@@ -242,12 +242,12 @@ storekeeperController.createDutyRecord = async (req, res, next) => {
 storekeeperController.getReceviedOrdersFromStore = async (req, res, next) => {
   try {
             
-    const user_id = req.params.user_id;  
+    const user_id = req.user;  
     const route_id = req.params.route_id; 
     
 
     const order_list = await storekeeperServices.getReceviedOrdersFromStore(user_id,route_id);
-      
+      console.log(order_list)
     if(order_list.length >0){
       const response = {
         err: 0,
