@@ -7,6 +7,7 @@ const customers = require('./api/customers');
 const guests = require('./api/guests');
 const managerRoutes = require('./api/manager');
 const assistantRoutes = require('./api/assistant');
+const adminRoutes = require('./api/admins');
 
 
 console.log("model index call");
@@ -25,5 +26,8 @@ router.use('/manager', managerRoutes);
 
 //assistant routes
 router.use('/assistant', assistantRoutes);
+
+//admin routes
+router.use('/admin', adminRoutes);
 
 module.exports = router;
