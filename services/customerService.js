@@ -165,23 +165,28 @@ class CustomerService {
 
     async getMyOrderList(customer_id,status) {
         try {
-            var order_list = await OrderDAO.getOrdersByCustomerId(customer_id,status);
+            var orders= await OrderDAO.getOrdersofCustomer(customer_id);
+
+
+            
             //order_list=order_list[0];
-            /*var myOrders = [];
-            for (let i = 0; i < order_list.length; i++) {
-                var order = order_list[i];
+            var myOrders = [];
+            for (let i = 0; i < orders.length; i++) {
+                var order = orders[i];
                 
                 let order_id = order.order_id;
                 let date = order.date;
                 let status = order.status;
-                let payment_id = order.payment_id
-
+                let total_amount=order.total_amount;
 
                 //var payment = await PaymentDAO.readOneEntity(payment_id);
-                var product_list = await QueryDAO.getProductByOrderId(order_id);
-                product_list=product_list[0];
+                var product=[];
+                var product_list = await OrderDAO.getProductsByOrderID(order_id);
+                for(let j in product_list){
+                    product.push(product_list[j].name)
+                }
 
-                var OneOrder = { order_id, date, status, product_list }
+                var OneOrder = { order_id, date, status, total_amount,product }
                 myOrders.push(OneOrder);
             }
 
@@ -210,9 +215,6 @@ class CustomerService {
             //        },
             //             ..........
             //    ]
-            */
-            return order_list;
-
         } catch (error) {
             console.log(error)
 
@@ -239,5 +241,5 @@ class CustomerService {
 }
 
 module.exports = CustomerService;
-//cus=new CustomerService();
-//cus.getMyOrderList(2,"All").then(result=>console.log(result))
+cus=new CustomerService();
+cus.getMyOrderList(2,"All").then(result=>console.log(result))
