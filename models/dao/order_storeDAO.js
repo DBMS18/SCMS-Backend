@@ -7,10 +7,10 @@ class OrderStoreDAO{
             
         }
     }
-
-    static async createOneEntity(orderId,storeId,dateNow){
-        const query  = "INSERT INTO `customer` (`customer_id`, `email`, `first_name`, `last_name`, `password`) VALUE (?, 'abc@gmail', 'kamal', 'amal', 'fbcfbncfb')";
-        const out = await db.query(query,[orderId]);
+    //tharinda
+    static async createOneEntity(order_id,store_id,dateNow){
+        const query  = "INSERT INTO `order_store` (`store_id`, `order_id`, `store_date`) VALUE (?, ?, ?)";
+        const out = await db.query(query,[store_id,order_id,dateNow]);
         return "Pass";
     }
 

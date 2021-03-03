@@ -49,13 +49,7 @@ class QueryDAO{
         return routes;
     }
 
-    static async getStoreId(user_id){
-        const query  = `SELECT store_id FROM storekeeper WHERE user_id = ? `;
-        const out = await db.query(query,[user_id]);
-        
-        return out[0][0];
-        //storekeeper is view
-    }
+    
     
     static async changeOtherEmployeeStatus(store_id,dateNow){
         const query  = `CALL state_change(?,?)`;
@@ -80,7 +74,104 @@ class QueryDAO{
         console.log(out[0]);
         return out[0];
     }
+    //tharinda
+    //from store keeper id this will return all orders which will received to store
+    static async getAcceptedOrdersByStorekeeperId(user_id){
+        var acceptedOrders=[];
+        const query =`SELECT order_id,total_amount,first_name,expected_date FROM orders,customer WHERE orders.customer_id=customer.customer_id AND status="accepted" AND address_id IN(select address_id from address where city IN(select city FROM store where store_id IN(select store_id FROM users where user_id=?)))`;
+        const out=await db.query(query,[user_id]);
+        for (const element of out[0]){
+            const order_id=element.order_id;
+            const total_amount=element.total_amount;
+            const first_name=element.first_name;
+            const expected_date=element.expected_date;
+            
+            const acceptedOrder={
+                order_id:order_id,
+                first_name:first_name,
+                total_amount:total_amount,
+                expected_date:expected_date
+            }
+            acceptedOrders=[...acceptedOrders,acceptedOrder]
+        }
+        return acceptedOrders;
+    }
+    //tharinda
+    static async getStoredOrdersByStorekeeperId(user_id){
+        var storedOrders=[];
+        const query =`SELECT order_id,total_amount,first_name,expected_date FROM orders,customer WHERE orders.customer_id=customer.customer_id AND status="stored" AND address_id IN(select address_id from address where city IN(select city FROM store where store_id IN(select store_id FROM users where user_id=?)))`;
+        const out=await db.query(query,[user_id]);
+        for (const element of out[0]){
+            const order_id=element.order_id;
+            const total_amount=element.total_amount;
+            const first_name=element.first_name;
+            const expected_date=element.expected_date;
+            const storedOrder={
+                order_id:order_id,
+                first_name:first_name,
+                total_amount:total_amount,
+                expected_date:expected_date
+            }
+            storedOrders=[...storedOrders,storedOrder]
+        }
+        return storedOrders;
+    }
+    //tharinda
+    static async markOrderReceivedToStore(order_id){
+        const query=`update orders set status="stored" where order_id=?`;
+        await db.query(query,[order_id]);
+    }
+    //tharinda
+    static async getStorekeeperNameAndStoreLocation(user_id){
+        
+        const query =`select first_name,last_name,city from users,store where store.store_id=users.store_id AND user_id=?`;
+        const out=await db.query(query,[user_id]);
+        if (out[0][0]!=undefined){
+        const first_name=out[0][0].first_name;
+        const last_name=out[0][0].last_name;
+        const city=out[0][0].city;
+        const loginInfo={
+                first_name:first_name,
+                last_name:last_name,
+                city:city
+            }
+        
+        return loginInfo;
+        }else{
+            return null;
+        }
+
+    }
+    //tharinda
+    static async getStoreId(user_id){
+        const query  = `SELECT store_id FROM users WHERE user_id = ? `;
+        const out = await db.query(query,[user_id]);
+        
+        return out[0][0].store_id;
+        
+    }
     
+
+    //report generation(items with most orders)
+    static async getItemsWithMostOrders(){
+        var mostOrderList=[]
+        const query =`SELECT product_id,type,sum(ordered_quantity) as total_order from product RIGHT OUTER JOIN product_order using (product_id) GROUP BY product_id ORDER BY sum(ordered_quantity) DESC`;
+        const out=await db.query(query);
+        for (const element of out[0]){
+            const product_id=element.product_id;
+            const type=element.type;
+            const total_order=element.total_order;
+            const order={
+                product_id:product_id,
+                type:type,
+                total_order:total_order
+            }
+            mostOrderList=[...mostOrderList,order]
+        }
+        
+        return mostOrderList;
+    }
+   
   
 }
 

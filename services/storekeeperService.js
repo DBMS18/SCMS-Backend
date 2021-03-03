@@ -14,9 +14,51 @@ class StorekeeperService {
     constructor() {
 
     }
+    //tharinda
+    async orderSendByManager(user_id){
+        try{
+            var acceptedOrderList=await QueryDAO.getAcceptedOrdersByStorekeeperId(user_id);
+            return acceptedOrderList;
+        }catch (error) {
+            console.log(error)
+        }
+    }
+    //tharinda
+    async orderReceivedByStorekeeper(user_id){
+        try{
+            var storedOrderList=await QueryDAO.getStoredOrdersByStorekeeperId(user_id);
+            return storedOrderList;
+        }catch (error) {
+            console.log(error)
+        }
+    }
+    //tharinda
+    async markOrderReceived(order_id,user_id){
+        try{
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var dateNow = yyyy + '-' + mm + '-' + dd;
+            const store_id = await QueryDAO.getStoreId(user_id);
+            await QueryDAO.markOrderReceivedToStore(order_id);
+            await OrderStoreDAO.createOneEntity(order_id,store_id, dateNow); 
+        }catch (error) {
+            console.log(error)
+        }
+    }
+    //tharinda
+    async getLoginInfo(user_id){
+        try{
+            var loginInfo=await QueryDAO.getStorekeeperNameAndStoreLocation(user_id);
+            return loginInfo;
+        }catch (error) {
+            console.log(error)
+        }
+    }
 
     //get orders in Train list
-    async orderSendByManager(user_id) {
+    async orderSendByManagerOld(user_id) {
         try {
             const store_id = await QueryDAO.getStoreId(user_id);
           
@@ -63,7 +105,7 @@ class StorekeeperService {
 
     }
 
-    async orderReceviedToStore(order_id, user_id) {
+    async orderReceviedToStoreOld(order_id, user_id) {
         try {
 
             const store_id =  await QueryDAO.getStoreId(user_id);

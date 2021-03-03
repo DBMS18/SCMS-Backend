@@ -1,3 +1,4 @@
+const { response } = require('express');
 const StorekeeperService = require('../services/storekeeperService.js');
 
 // Instantiate Storekeeper:
@@ -5,13 +6,42 @@ let storekeeperServices = new StorekeeperService();
 
 const storekeeperController  = {};
 
-//storekeeper functions
+//storekeeper functions(Tharinda)
+storekeeperController.getLoginInfo = async (req, res, next) => {
+ 
+    try {        
+        const user_id = req.user;  
+        const loginInfo = await storekeeperServices.getLoginInfo("2");
+         
+        if(loginInfo){
+          const response = {
+            err: 0,
+            obj: loginInfo,
+            msg: ""
+          }
+          return res.json(response);
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "No login info"
+          }
+          return res.json(response);
+        }
+        
+    } catch (err) {
+      next(err);
+    }
+    
+};
+
+
+
+
 storekeeperController.orderSendByManager = async (req, res, next) => {
     try {        
-        const user_id = req.params.user_id;  
-        
-
-        const order_list = await storekeeperServices.orderSendByManager(user_id); 
+        const user_id = req.user;  
+        const order_list = await storekeeperServices.orderSendByManager("2"); 
         
         if(order_list.length >0){
           const response = {
@@ -35,39 +65,64 @@ storekeeperController.orderSendByManager = async (req, res, next) => {
     
 };
 
-storekeeperController.orderReceviedToStore= async (req, res, next) => {
+storekeeperController.orderReceivedByStorekeeper= async (req, res, next) => {
   try {
             
-      const order_id = req.body.order_id;
-      const user_id = req.body.user_id;
-
+      //const order_id = req.body.order_id;
+      const user_id = req.user;
+      const order_list = await storekeeperServices.orderReceivedByStorekeeper("2");
       
-
-      const result = await storekeeperServices.orderReceviedToStore(order_id,user_id);
+      if(order_list.length >0){
+          const response = {
+            err: 0,
+            obj: order_list,
+            msg: ""
+          }
+          return res.json(response);
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "No Orders in your store"
+          }
+          return res.json(response);
+        }
       
-      if(result != null){
-        const response = {
-          err: 0,
-          obj: true,
-          msg: "Mark as Recevied"
+        } catch (err) {
+          next(err);
         }
-        return res.json(response);
-      }else{
-        const response = {
-          err: 1,
-          obj: false,
-          msg: "Mark as not recevied"
-        }
-        return res.json(response);
+  
+};
+
+storekeeperController.markOrderReceived = async (req, res, next) => {
+  try {
+            
+    const order_id = req.body.id;
+    const user_id = req.user;
+    const result = await storekeeperServices.markOrderReceived(order_id,'2');
+    
+    if(result != null){
+      const response = {
+        err: 0,
+        obj: true,
+        msg: "Mark as Received"
       }
+      return res.json(response);
+    }else{
+      const response = {
+        err: 1,
+        obj: false,
+        msg: "cannot mark"
+      }
+      return res.json(response);
+    }  
       
   } catch (err) {
-    console.log(err);
     next(err);
   }
   
 };
-
+//tharinda s work over
  //----------------------task 2----------------------
 
  storekeeperController.getAvailableRoutes = async (req, res, next) => {
