@@ -9,6 +9,10 @@ class QueryDAO{
     }
 
     static async getProductByOrderId(orderId){
+        const query  = `SELECT product_id,product_name,ordered_quantity FROM proudct_order LEFT OUTER JOIN product using (product_id) WHERE order_id = ? `;
+        const out = await db.query(query,[orderId]);
+        console.log(out[0]);
+        return out[0];
         // join productOrder and product - return produtId/ name/order quantity - where orderId
     }
 
@@ -22,7 +26,7 @@ class QueryDAO{
     }
 
     static async getOrdersInMyStore(store_id,route_id){
-        const query  = `SELECT order_id,date,store_date,total_capacity FROM order_store LEFT OUTER JOIN order USING (order_id) WHERE store_id = ? AND route_id = ? AND status ="Recevied To Store"`;
+        const query  = `SELECT order_id,date,store_date,total_capacity FROM order_store LEFT OUTER JOIN order USING (order_id) WHERE store_id = ? AND route_id = ? AND status ="stored"`;
         const out = await db.query(query,[store_id,route_id]);
         console.log(out[0]);
         return out[0];

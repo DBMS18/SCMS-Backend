@@ -285,7 +285,7 @@ class StorekeeperService {
           
             
             var OurStoreOrdersList = [] 
-            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id,route_id); 
+            var allOrdersList = await QueryDAO.getOrdersInMyStore(store_id.store_id,route_id); 
             
             for (let i = 0; i < allOrdersList.length; i++) {
                 var order = allOrdersList[i];
