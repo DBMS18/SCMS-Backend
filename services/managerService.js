@@ -58,27 +58,27 @@ class ManagerService{
         try {       
             var OrdersList = [];
             var pendingList = await orderDAO.getPendingOrders(); //getting manager details
-            
             for (let i = 0; i < pendingList.length; i++) {
-                var order = pendingList[i];
+                let order = pendingList[i];
                 let order_id=order.order_id;
                 var store_city = await StoreDAO.getStoreCityByRouteId(order.route_id);
-                var city = store_city.city;
-                var store_id = store_city.store_id;
                 
+                console.log(store_city);
+                var city = store_city[0].city;
+                var store_id = store_city[0].store_id;
+                console.log(store_id);
                 let date = order.date;
-                let total_capacity = order.total_capacity;
+                let total_capacity = order.total_amount;
                 let expected_date =order.expected_date;
 
 
                 var train_list = await trainDAO.getTrainsListByStoreId(store_id);
 
                 
-                var OneOrder = { order_id,store_id,city, date,expected_date, total_capacity, train_list }
+                var OneOrder = {order_id,store_id,city, date,expected_date, total_capacity, train_list};
                 OrdersList.push(OneOrder);
                 
             }
-            console.log(OrdersList);
             return OrdersList;
                       
         } catch (error) {

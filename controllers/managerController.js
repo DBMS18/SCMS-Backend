@@ -44,6 +44,7 @@ managerController.getAllOrders_Trains= async(req,res,next) =>{
     try {        
         //const store_id = req.body.store_id;  // not sure   
         const order_list = await managerServices.getOrdersPendingToAssignTrains();
+        console.log(order_list);
         if(order_list.length){
           const response = {
             err: 0,
