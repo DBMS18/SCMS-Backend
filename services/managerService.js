@@ -63,10 +63,10 @@ class ManagerService{
                 let order_id=order.order_id;
                 var store_city = await StoreDAO.getStoreCityByRouteId(order.route_id);
                 
-                console.log(store_city);
+                //console.log(store_city);
                 var city = store_city[0].city;
                 var store_id = store_city[0].store_id;
-                console.log(store_id);
+                //console.log(store_id);
                 let date = order.date;
                 let total_capacity = order.total_amount;
                 let expected_date =order.expected_date;

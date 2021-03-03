@@ -15,7 +15,7 @@ class TrainDAO{
         const query ="SELECT * FROM train LEFT OUTER JOIN train_store ON train.train_id = train_store.train_id where train_store.store_id=?;";
         const out = await db.query(query,[store_id]);
         
-        console.log(out[0][0]);
+        //console.log(out[0][0]);
         return out[0][0];
         
     }

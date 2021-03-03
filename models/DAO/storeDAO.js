@@ -11,7 +11,7 @@ class StoreDAO{
 
         const query ="SELECT store.store_id,store.city FROM store INNER JOIN route ON store.store_id=route.store_id where route.route_id=?;";
         const out = await db.query(query,[route_id]);
-        console.log(route_id);
+        //console.log(route_id);
         return out[0];
     }
 
