@@ -52,7 +52,7 @@ managerController.getAllOrders_Trains= async(req,res,next) =>{
             msg: ""
           }
             
-          
+        return res.json(response);
         }else{
           const response = {
             err: 1,
