@@ -5,7 +5,7 @@ const mysql = require('mysql2/promise');
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'supplychain',
+    database: 'newscms',
    
   });
   

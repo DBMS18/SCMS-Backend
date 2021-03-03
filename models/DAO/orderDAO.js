@@ -40,20 +40,17 @@ class OrderDAO{
         //return orders list
     }
     static async getPendingOrders(){
-        let details = []
-        //gets the all  from the database
-        //execute query and create order and push then to list
-        //order_id,date,total_amount,expected_date,city,trainsList
-        const query  = "SELECT * FROM `orders`  WHERE status = 'created'";
+        const query  = "SELECT * FROM orders  WHERE `status` = 'created'";
         const out = await db.query(query,[]);
-        details = out.rows;
-        return details;
+        
+        return out[0];
     }
     static async getAssignedOrders(){
-        const query  = "SELECT * FROM `orders` INNER JOIN train_order ON orders.Order_id=train_order.order_id;";
+        
+        const query  = "SELECT * FROM orders INNER JOIN train_order ON orders.Order_id=train_order.order_id;";
         const out = await db.query(query,[]);
-        details = out.rows;
-        return details;
+        
+        return out[0];
     }
 
 }

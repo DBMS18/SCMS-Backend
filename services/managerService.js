@@ -56,10 +56,9 @@ class ManagerService{
     }
     async getOrdersPendingToAssignTrains(){
         try {       
-            var details = [];
+            var OrdersList = [];
             var pendingList = await orderDAO.getPendingOrders(); //getting manager details
             
-            console.log('Got All Orders');
             for (let i = 0; i < pendingList.length; i++) {
                 var order = pendingList[i];
                 let order_id=order.order_id;
@@ -76,11 +75,11 @@ class ManagerService{
 
                 
                 var OneOrder = { order_id,store_id,city, date,expected_date, total_capacity, train_list }
-                OurStoreOrdersList.push(OneOrder);
+                OrdersList.push(OneOrder);
                 
             }
-            
-            return details;
+            console.log(OrdersList);
+            return OrdersList;
                       
         } catch (error) {
             
@@ -152,7 +151,7 @@ class ManagerService{
                 OurStoreOrdersList.push(OneOrder);
                 
             }
-            
+            console.log(details);
             return details;
                       
         } catch (error) {
