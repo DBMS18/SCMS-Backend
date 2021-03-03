@@ -31,7 +31,6 @@ class TruckDAO{
         try {
             const query  = "SELECT truck_number,capacity FROM `truck` where status = 'unlock' AND store_id = ?";
             const out = await db.query(query,[store_id]);
-            console.log(out[0]);
             return out[0];
             
         } catch (error) {

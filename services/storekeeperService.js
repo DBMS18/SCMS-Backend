@@ -93,9 +93,7 @@ class StorekeeperService {
         try {
 
             const store_id = await QueryDAO.getStoreId(user_id);
-            
             var route_list = await QueryDAO.getRouteForOrdersByStore(store_id.store_id);
-
             return route_list;
 
             // [
@@ -130,14 +128,13 @@ class StorekeeperService {
             var yyyy = today.getFullYear();
             var dateNow = yyyy + '-' + mm + '-' + dd;
 
-            console.log(weekStartDate)
 
             const store_id = await QueryDAO.getStoreId(user_id);
             const driverList = []
 
-
             var drivers = await DriverDAO.getUnlockDrivers(store_id.store_id)
-            
+
+
             for (let i = 0; i < drivers.length; i++) {
 
                 var driver = drivers[i];
@@ -147,7 +144,7 @@ class StorekeeperService {
 
                 var times = await DriverDAO.getWeekHours(driver.driver_id,weekStartDate,dateNow)
 
-                if(times < 40){
+                if(times.working_hours < 40 || times.working_hours == null){
                     var OneDriver = {driver_id,driver_name}
                     driverList.push(OneDriver);
                 }
@@ -156,8 +153,6 @@ class StorekeeperService {
                 
             }
             //get working hours < 40 drivers in Store = store_id
-
-            //
 
 
             return driverList
@@ -206,7 +201,7 @@ class StorekeeperService {
 
                 var times = await AssistantDAO.getWeekHours(assistant_id,weekStartDate,dateNow);
 
-                if(times < 60){
+                if(times.working_hours < 60 || times.working_hours==null){
                     var OneAssistant = {assistant_id,assistant_name}
                     assistantList.push(OneAssistant);
                 }
@@ -230,10 +225,8 @@ class StorekeeperService {
 
     async getAvailableTrucks(user_id) {
         try {
-
             const store_id = await QueryDAO.getStoreId(user_id);
             var trucks = await TruckDAO.getUnlockTrucks(store_id.store_id);
-            console.log(trucks);
 
 
             return trucks
@@ -270,8 +263,8 @@ class StorekeeperService {
             }else{
                 start_time = start_time+":00:00";
             }
-
-            var duty_id = await DutyRecordDAO.createOneEntity(store_id.store_id, route_id, driver_id, assistent_id, truck_number,dateNow, start_time); //check result here
+        
+            var duty_id = await DutyRecordDAO.createOneEntity(store_id.store_id, route_id, driver_id, assistent_id, truck_number, start_time,dateNow); //check result here
             await QueryDAO.changeOtherEmployeeStatus(store_id.store_id,dateNow);
             await StorekeeperDutyRecordDAO.createOneEntity(user_id,duty_id);
 
@@ -348,13 +341,43 @@ class StorekeeperService {
             const store_id = await QueryDAO.getStoreId(user_id);
 
             const duty_list = await QueryDAO.getMyStoreSetOff(store_id.store_id);
-
+            console.log(duty_list)
             return duty_list;
 
         } catch (error) {
 
         }
     }
+
+    async markDutyFinished(duty_id) {
+        try {
+
+
+            await DutyRecordDAO.markDutyOff(duty_id);
+
+
+            return "Mark Success";
+
+        } catch (error) {
+
+        }
+    }
+   
+    async  mockFunctions(user_id) {
+        try {
+
+            var customer = await QueryDAO.mockTest(user_id);
+
+           
+
+            return customer;
+
+        } catch (error) {
+
+        }
+    }
+
+
    
     async  mockFunctions(user_id) {
         try {

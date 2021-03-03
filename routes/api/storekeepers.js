@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-//const authorization = require('../../middlewares/auth');
+const authorization = require('../../middlewares/auth');
 
 const storekeeperController = require('../../controllers/storekeeperController');
 
@@ -12,21 +12,21 @@ const storekeeperController = require('../../controllers/storekeeperController')
 router.get('/order-reception/:user_id', storekeeperController.orderSendByManager);// authorization should add
 router.post('/order-received',storekeeperController.orderReceviedToStore);
 
-router.get('/available-routes/:user_id', storekeeperController.getAvailableRoutes);
+router.get('/available-routes/', authorization, storekeeperController.getAvailableRoutes);
 
-router.get('/available-drivers/:user_id', storekeeperController.getAvailableDrivers);
-router.get('/available-assistant/:user_id', storekeeperController.getAvailableAssistants);
-router.get('/available-trucks/:user_id', storekeeperController.getAvailableTrucks);
+router.get('/available-drivers/', authorization, storekeeperController.getAvailableDrivers);
+router.get('/available-assistant/', authorization, storekeeperController.getAvailableAssistants);
+router.get('/available-trucks/', authorization, storekeeperController.getAvailableTrucks);
 
 
-router.post('/create-duty',storekeeperController.createDutyRecord);
+router.post('/create-duty', authorization, storekeeperController.createDutyRecord);
 
 router.get('/received-orders/:user_id/:route_id',storekeeperController.getReceviedOrdersFromStore);
 
 router.post('/order-markas-send',storekeeperController.markAsSendForDelivering);
 
-router.get('/duty-set-off/:user_id',storekeeperController.getDutySetOff)
-// router.post('/duty-finished',storekeeperController.markDutyFinished)
+router.get('/duty-set-off', authorization, storekeeperController.getDutySetOff)
+router.post('/duty-finished', authorization, storekeeperController.markDutyFinished)
 
 // router.get('/test/:user_id', storekeeperController.mockFunctions) // authorization should add
 

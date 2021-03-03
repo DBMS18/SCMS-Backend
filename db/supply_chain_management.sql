@@ -65,7 +65,7 @@
 
 -- BEGIN
 --     UPDATE duty_record SET status ='arrived' WHERE duty_id = dutyId;
---     UPDATE truck SET status ='unlocklock' WHERE truck_number = (select truck_number from duty_record where duty_id = dutyId);
+--     UPDATE truck SET status ='unlock' WHERE truck_number = (select truck_number from duty_record where duty_id = dutyId);
 -- END;
 -- $$
 

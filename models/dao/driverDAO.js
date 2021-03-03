@@ -40,7 +40,7 @@ class DriverDAO{
     }
 
     static async getWeekHours(driver_id,week_start,current_date){
-        const query  = `SELECT SUM(time) FROM duty_record join route using (route_id) WHERE date > ? AND date <= ? AND status = "arrived" AND driver_id = ?`;
+        const query  = `SELECT SUM(time) as working_hours FROM duty_record join route using (route_id) WHERE date > ? AND date <= ? AND status = "arrived" AND driver_id = ?`;
         const out = await db.query(query,[week_start,current_date,driver_id]);
        
         return out[0];
