@@ -32,6 +32,7 @@ class QueryDAO{
         var routes = [];
         const query1  = `select route_id from route`;
         const out1 = await db.query(query1);
+        console.log(out1)
         for (const element of out1[0]) {
             const route_id = element.route_id
             const query2  = `select city_name from city where route_id=?`;

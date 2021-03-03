@@ -54,9 +54,9 @@ class CustomerService {
     async checkOutMyCart(today,paid_amount,payment_method,customer_id,total_amount,street_number,street_name,city,zip,expected_date,route_id,products) {
         //other way - can make procedure/transaction to update all table
         try {
-            console.log("object")
-            var paymentId = await PaymentDAO.getNewPaymentID();
-            var orderId =await  OrderDAO.getNewPaymentID();
+            console.log("service started")
+            var paymentId = await PaymentDAO.getNewPaymentID()+1;
+            var orderId =await  OrderDAO.getNewPaymentID()+1;
             console.log("payment")
             console.log(paymentId+1)
             console.log(today)
@@ -82,8 +82,11 @@ class CustomerService {
             console.log(route_id)
             console.log(products)
 
-        } catch (error) {
+            var response = await CustomerQuerryDAO.createOrder(today,paid_amount,payment_method,customer_id,total_amount,street_number,street_name,city,zip,expected_date,route_id,products,paymentId,orderId);
 
+            return response;
+        } catch (error) {
+            return error;
         }
 
     }

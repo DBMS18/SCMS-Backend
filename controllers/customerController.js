@@ -107,8 +107,7 @@ customerController.getRouteList = async (req, res, next) => {
 
 customerController.checkOutMyCart = async (req, res, next) => {
     try {
-      console.log("asdgd")
-      console.log(req.body)
+      console.log("controller started")
       var datetime = new Date();
 
       var today = datetime.toISOString().slice(0,10);
@@ -129,7 +128,8 @@ customerController.checkOutMyCart = async (req, res, next) => {
         const p = {
           product_id:product.product_id,
           ordered_quantity:product.selected,
-          total_capacity:product.selected*product.capacity
+          total_capacity:product.selected*product.capacity,
+          type:product.type
         }
         total_amount = total_amount + p.total_capacity;
         return p;
@@ -137,28 +137,58 @@ customerController.checkOutMyCart = async (req, res, next) => {
 
       const resultMsg = await customerServices.checkOutMyCart(today,paid_amount,payment_method,customer_id,total_amount,street_number,street_name,city,zip,expected_date,route_id,products);
       
-      // if(resultMsg === "Payment Failed"){
-      //   const response = {
-      //     err: 1,
-      //     obj: {},
-      //     msg: "Payment Failed"
-      //   }
-      //   return res.json(response);
-      // }else if(resultMsg === "Paymet success.Order Failed"){
-      //   const response = {
-      //     err: 1,
-      //     obj: {},
-      //     msg: "Paymet success. Order not success"
-      //   }
-      //   return res.json(response);
-      // }else{
+      if(resultMsg.err === 0){
         const response = {
           err: 0,
           obj: {},
-          msg: "Order success"
+          msg: "Payment successfull"
+        }
+        return res.json(response);
+      }else if(resultMsg.err === 1){
+        if(resultMsg.code === 1){
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "Payment error"
+          }
+          return res.json(response);
+        }else if(resultMsg.code === 2){
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "Address error"
+          }
+          return res.json(response);
+        }else if(resultMsg.code === 3){
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "order error"
+          }
+          return res.json(response);
+        }else if(resultMsg.code === 4){
+          const response = {
+            err: 1,
+            obj: resultMsg.products,
+            msg: "Product error"
+          }
+          return res.json(response);
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "Something is Wrong"
+          }
+          return res.json(response);
+        }
+      }else{
+        const response = {
+          err: 0,
+          obj: {},
+          msg: "Something is Wrong"
         }
         return res.json(response); 
-      // }
+      }
         
     } catch (err) {
       next(err);
