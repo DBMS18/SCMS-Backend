@@ -14,8 +14,8 @@ router.get('/get-routes', authorization, customerController.getRouteList);
 router.post('/checkout_cart', authorization, customerController.checkOutMyCart);
 
 
-router.get('/get-orders/:customerId', authorization, customerController.getMyOrderList);
-router.get('/mark-delivery/:customerId/:orderId', authorization, customerController.markDelivering);
+router.get('/get-orders/:status', authorization, customerController.getMyOrderList);
+router.put('/mark-delivery/:orderId', authorization,  customerController.markDelivering);
 
 
 

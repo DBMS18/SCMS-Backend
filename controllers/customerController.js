@@ -198,39 +198,43 @@ customerController.checkOutMyCart = async (req, res, next) => {
 
 // get my order list
 customerController.getMyOrderList = async (req, res, next) => {
-    try {
-        var customer_id = req.params.customer_id;
+  try {
+      var customer_id = req.user;
+      var status = req.params.status;
 
-        const order_list = await customerServices.getMyOrderList(customer_id);
-        
-        if(order_list.length > 0){
-          const response = {
-            err: 0,
-            obj: order_list,
-            msg: ""
-          }
-          return res.json(response);
-        }else{
-          const response = {
-            err: 1,
-            obj: {},
-            msg: "No Order Available"
-          }
-          return res.json(response);
+//var customer_id=2;
+//var status='All'
+      const order_list = await customerServices.getMyOrderList(customer_id,status);
+      console.log(order_list)
+      if(order_list.length > 0){
+        const response = {
+          err: 0,
+          obj: order_list,
+          msg: ""
         }
-        
-    } catch (err) {
-      next(err);
-    }
-    
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No Order Available"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
 };
 
 // confirm order received
 
 customerController.markDelivering = async (req, res, next) => {
   try {
-      var customer_id = req.params.customer_id;
-      var order_id = req.params.order_id;
+      var customer_id = req.user;
+      var order_id = req.params.orderId;
+
       
       const result = await customerServices.markOrderDelivering(customer_id,order_id);
       

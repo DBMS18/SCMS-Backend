@@ -176,28 +176,25 @@ class CustomerService {
 
     //-----------------------Confirm order----------------------
 
-    async getMyOrderList(customer_id) {
+    async getMyOrderList(customer_id,status) {
         try {
-            
-            var order_list = await OrderDAO.getOrdersByCustomerId(customer_id);
-            var myOrders = [];
+            var order_list = await OrderDAO.getOrdersByCustomerId(customer_id,status);
+            //order_list=order_list[0];
+            /*var myOrders = [];
             for (let i = 0; i < order_list.length; i++) {
                 var order = order_list[i];
                 
                 let order_id = order.order_id;
                 let date = order.date;
-                let total_capacity = order.total_capacity;
                 let status = order.status;
                 let payment_id = order.payment_id
 
 
-                var payment = await PaymentDAO.readOneEntity(payment_id);
- 
-
+                //var payment = await PaymentDAO.readOneEntity(payment_id);
                 var product_list = await QueryDAO.getProductByOrderId(order_id);
-   
+                product_list=product_list[0];
 
-                var OneOrder = { order_id, date, total_capacity, payment, status, product_list }
+                var OneOrder = { order_id, date, status, product_list }
                 myOrders.push(OneOrder);
             }
 
@@ -226,9 +223,11 @@ class CustomerService {
             //        },
             //             ..........
             //    ]
-
+            */
+            return order_list;
 
         } catch (error) {
+            console.log(error)
 
         }
 
@@ -237,7 +236,6 @@ class CustomerService {
     async markOrderDelivering(customer_id, order_id) {
         try {
             var response = await OrderDAO.markOrderDelivering(customer_id, order_id);
-
             if (response != null) {
                 return false
             }
