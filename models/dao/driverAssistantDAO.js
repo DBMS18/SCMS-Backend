@@ -47,3 +47,5 @@ class DriverAssistentDAO {
         return out[0];
     }
 }
+
+module.exports = DriverAssistentDAO;

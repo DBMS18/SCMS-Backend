@@ -3,7 +3,7 @@ const DriverAssistant = require('../services/driverAssistant.js');
 let driverAssistant = new DriverAssistant();
 
 const driverAssistantController  = {};
-// get my order list
+// get store order list
 driverAssistantController.getOrdersOnDuty = async (req, res, next) => {
     try {
         var user_id = req.params.userId;
@@ -61,4 +61,4 @@ driverAssistantController.markDelivering = async (req, res, next) => {
     
   };
 
-module.exports = customerController;
+module.exports = driverAssistantController;

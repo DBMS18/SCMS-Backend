@@ -4,7 +4,7 @@ class DriverAssistant {
 
     }
 
-    async getOrderList(user_id) { 
+    async getOrdersOnDuty(user_id) { 
         try {
             var orderList = await DriverAssistentDAO.getOrdersOnDuty(user_id);
 
@@ -20,7 +20,7 @@ class DriverAssistant {
         try {
             var response = await DriverAssistentDAO.markOrderDelivering(order_id);
             if (response != null) {
-                return false
+                return false;
             }
             return true;
 
