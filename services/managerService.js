@@ -176,12 +176,17 @@ class ManagerService{
             var trainsListWithRemaining =[];
             for (let i = 0; i < trainsList.length; i++) {
                 var train = trainsList[i];
-
+                console.log(train);
                 var totalVolume= await trainDAO.getTotalVolume(train.train_id);
-                var remaining =train.total_capacity- totalVolume;
-                var trainNew=[train,remaining];
+                //console.log(totalVolume);
+                console.log(totalVolume[0].sum_total);
+                var remaining =parseInt(train.capacity)- parseInt(totalVolume[0].sum_total);
+                console.log(remaining);
+                var trainNew={train,remaining};
                 trainsListWithRemaining.push(trainNew);
+                
             }
+            //console.log(trainsListWithRemaining);
             return trainsListWithRemaining;
         } catch (error) {
             console.log(error);
