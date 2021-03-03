@@ -15,54 +15,52 @@ class StorekeeperService {
 
     }
 
-    //get orders in Train list
-    async orderSendByManager(user_id) {
-        try {
-            const store_id = await QueryDAO.getStoreId(user_id);
-          
-            
-            var OurStoreOrdersList = [] 
-            var allOrdersList = await OrderDAO.getAllUnReceviedOrders(); //get all orders list with not recvied status
-            
-            for (let i = 0; i < allOrdersList.length; i++) {
-                var order = allOrdersList[i];
-                const storeId = await RouteDAO.getStoreIdByRouteId(order.route_id);
-                if (storeId === store_id) {
-                    let order_id = order.order_id;
-                    let date = order.date;
-                    let total_capacity = order.total_capacity;
-
-                    var product_list = await QueryDAO.getProductByOrderId(id);
-                    
-                    var OneOrder = { order_id, date, total_capacity, product_list }
-                    OurStoreOrdersList.push(OneOrder);
-                }
-            }
-
-            return OurStoreOrdersList;
-            //    [
-            //        {
-            //            id:1,
-            //            date:2020-12-12,
-            //            total_capacity: 50,
-            //            product_list:[
-            //                 {
-            //                     product_id:2
-            //                     name:Shampoo,
-            //                     ordered_quantity: 10
-            //                 },
-            //                 ..........                           
-            //            ]
-            //        },
-            //             ..........
-            //    ]
-
-        } catch (error) {
-            console.log(error)
-        }
-
+   //tharinda
+   async orderSendByManager(user_id){
+    try{
+        var acceptedOrderList=await QueryDAO.getAcceptedOrdersByStorekeeperId(user_id);
+        return acceptedOrderList;
+    }catch (error) {
+        console.log(error)
+    }
     }
 
+    //tharinda
+    async orderReceivedByStorekeeper(user_id){
+        try{
+            var storedOrderList=await QueryDAO.getStoredOrdersByStorekeeperId(user_id);
+            return storedOrderList;
+        }catch (error) {
+            console.log(error)
+        }
+    }
+
+    //tharinda
+    async getLoginInfo(user_id){
+        try{
+            var loginInfo=await QueryDAO.getStorekeeperNameAndStoreLocation(user_id);
+            return loginInfo;
+        }catch (error) {
+            console.log(error)
+        }
+    }
+
+    //tharinda
+    async markOrderReceived(order_id,user_id){
+        try{
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            var dateNow = yyyy + '-' + mm + '-' + dd;
+            const store_id = await QueryDAO.getStoreIdFromUser(user_id);
+            await QueryDAO.markOrderReceivedToStore(order_id);
+            await OrderStoreDAO.createOneEntity(order_id,store_id, dateNow); 
+        }catch (error) {
+            console.log(error)
+        }
+    }
+    
     async orderReceviedToStore(order_id, user_id) {
         try {
 

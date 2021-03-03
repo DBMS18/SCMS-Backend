@@ -7,32 +7,30 @@ const storekeeperController  = {};
 
 //storekeeper functions
 storekeeperController.orderSendByManager = async (req, res, next) => {
-    try {        
-        const user_id = req.params.user_id;  
-        
-
-        const order_list = await storekeeperServices.orderSendByManager(user_id); 
-        
-        if(order_list.length >0){
-          const response = {
-            err: 0,
-            obj: order_list,
-            msg: ""
-          }
-          return res.json(response);
-        }else{
-          const response = {
-            err: 1,
-            obj: {},
-            msg: "No Orders for your store"
-          }
-          return res.json(response);
+  try {        
+      const user_id = req.user;  
+      const order_list = await storekeeperServices.orderSendByManager(user_id); 
+      
+      if(order_list.length >0){
+        const response = {
+          err: 0,
+          obj: order_list,
+          msg: ""
         }
-        
-    } catch (err) {
-      next(err);
-    }
-    
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No Orders for your store"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
 };
 
 storekeeperController.orderReceviedToStore= async (req, res, next) => {
@@ -350,6 +348,93 @@ storekeeperController.markDutyFinished = async (req, res, next) => {
         err: 1,
         obj: false,
         msg: "Marking failed"
+      }
+      return res.json(response);
+    }  
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
+
+storekeeperController.orderReceivedByStorekeeper= async (req, res, next) => {
+  try {
+            
+      //const order_id = req.body.order_id;
+      const user_id = req.user;
+      const order_list = await storekeeperServices.orderReceivedByStorekeeper(user_id);
+      
+      if(order_list.length >0){
+          const response = {
+            err: 0,
+            obj: order_list,
+            msg: ""
+          }
+          return res.json(response);
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "No Orders in your store"
+          }
+          return res.json(response);
+        }
+      
+        } catch (err) {
+          next(err);
+        }
+  
+};
+
+//storekeeper functions(Tharinda)
+storekeeperController.getLoginInfo = async (req, res, next) => {
+ 
+  try {        
+      const user_id = req.user;  
+      const loginInfo = await storekeeperServices.getLoginInfo(user_id);
+       
+      if(loginInfo){
+        const response = {
+          err: 0,
+          obj: loginInfo,
+          msg: ""
+        }
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No login info"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
+};
+
+storekeeperController.markOrderReceived = async (req, res, next) => {
+  try {
+            
+    const order_id = req.body.id;
+    const user_id = req.user;
+    const result = await storekeeperServices.markOrderReceived(order_id,'2');
+    
+    if(result != null){
+      const response = {
+        err: 0,
+        obj: true,
+        msg: "Mark as Received"
+      }
+      return res.json(response);
+    }else{
+      const response = {
+        err: 1,
+        obj: false,
+        msg: "cannot mark"
       }
       return res.json(response);
     }  

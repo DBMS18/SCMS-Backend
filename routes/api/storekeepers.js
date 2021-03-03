@@ -9,8 +9,10 @@ const storekeeperController = require('../../controllers/storekeeperController')
 
 // router.get('/api/storekeeper', authorization,storekeeperController.renderDashboard); // get store keeper dashboard  -     not
 
-router.get('/order-reception/:user_id', storekeeperController.orderSendByManager);// authorization should add
-router.post('/order-received',storekeeperController.orderReceviedToStore);
+router.get('/order-reception', authorization, storekeeperController.orderSendByManager);// authorization should add
+router.get('/order-received', authorization, storekeeperController.orderReceivedByStorekeeper);
+router.get('/login-info', authorization, storekeeperController.getLoginInfo);
+router.post('/order-stored', authorization, storekeeperController.markOrderReceived);
 
 router.get('/available-routes/', authorization, storekeeperController.getAvailableRoutes);
 
