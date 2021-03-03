@@ -10,15 +10,7 @@ class TrainOrderDAO{
         await db.query(query,[order_id,train_id,dateNow]);
         return 'Sucessfully added the record';
     }   
-    static async getAllRecords(date){
-        let record_list=[];
-        //gets the all  from the database
-        //execute query and create order and push then to list
-        //const query  = `SELECT section_id, section_name FROM project_section WHERE project_id = $1`;
-        const out = await db.query(query,[date]);
-        record_list = out.rows;
-        return record_list;
-    }  
+
     static async deleteRecord(order_id,train_id){
         const query = 'DELETE from train_order WHERE (`order_id`=? AND `train_id`=?);';
         await db.query(query,[order_id,train_id]);
