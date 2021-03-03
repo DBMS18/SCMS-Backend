@@ -75,7 +75,7 @@ managerController.addTrainOrderRecord= async(req,res,next) =>{
 
       const result = await managerServices.addTrainOrderRecord(order_id,train_id);
       
-      if(result == null){   
+      if(result != null){   
         const response = {
           err: 0,
           obj: true,
@@ -137,7 +137,7 @@ managerController.removeTrainOrderRecord= async(req,res,next) =>{
         const train_id = req.body.train_id;  
         const result = await managerServices.deleteRecord(order_id,train_id);
         
-        if(result==null){
+        if(result != null){
           const response = {
             err: 0,
             obj: {},
@@ -168,7 +168,7 @@ managerController.updateTrainOrderRecord= async(req,res,next) =>{
 
         const result = await managerServices.updateTrainOrderRecord(order_id,train_id);
       
-      if(result == null){    
+      if(result != null){    
         const response = {
           err: 0,
           obj: true,
