@@ -1,18 +1,16 @@
-/**
- * const express = require('express');
+const express = require('express');
 const router = express.Router();
 
-// All routes of User
-const userRoutes = require('./api/users');
+// All routes of Manager
+const managerRoutes = require('./api/manager');
 
-//user routes
-router.use('/users', userRoutes);
+//manager routes
+router.use('/manager', managerRoutes);
 
-//user event routes
-router.use('/events', userRoutes);
+// //user event routes
+// router.use('/events', userRoutes);
 
-//user event membership routes
-router.use('/memberships', userRoutes);
+// //user event membership routes
+// router.use('/memberships', userRoutes);
 
 module.exports = router;
- */

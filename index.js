@@ -5,31 +5,36 @@
 
 ////---------------------------------------------------------////
 
-const express = require('express'),
-http = require('http');
-const HttpStatus = require('http-status');
+const express = require('express');
+//http = require('http');
+//const HttpStatus = require('http-status');
 const bodyParser = require('body-parser');
-const cors = require("cors");
+//const cors = require("cors");
 
-const hostname = 'localhost';
-const port = 5000;
+// const hostname = 'localhost';
+// const port = 5000;
 
 const app = express();
-app.use(cors());
+//app.use(cors());
 app.use(bodyParser.json());
+app.use(require('./routes'));
+//  app.use((req, res, next) => {
+//      console.log(req.headers);
+//      res.statusCode = 200;
+//      res.setHeader('Content-Type', 'text/html');
+//      res.end('<html><body><h1>Hello world!</h1></body></html>');
+//  }); 
 
-// app.use((req, res, next) => {
-//     console.log(req.headers);
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/html');
-//     res.end('<html><body><h1>Hello world!</h1></body></html>');
-// });
 
-const server = http.createServer(app);
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+//const server = http.createServer(app);
+const server = app.listen(3000, () => {
+    console.log('Express server listening on port 3000 in development mode');
 });
+
+// server.listen(port, hostname, () => {
+//     console.log(`Server running at http://${hostname}:${port}/`);
+// });
 
 // //user Routes
 // const usersRoutes = require('./routes/api/users');
@@ -66,3 +71,5 @@ app.use((req, res, next) => {
         return res.json(response);
     }
   });
+
+  module.exports = server;
