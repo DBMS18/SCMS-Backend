@@ -1,3 +1,9 @@
 {
-    "jwtSecret": "sl_myjwtSecret"
+    "host":"localhost",
+    "user":"root",
+    "password":"",
+    "port":3306,
+    "database":"supply_chain_management",
+    "jwtPrivateKey":"unsecureKey"
+
 }
