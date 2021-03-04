@@ -179,8 +179,14 @@ class ManagerService{
                 console.log(train);
                 var totalVolume= await trainDAO.getTotalVolume(train.train_id);
                 //console.log(totalVolume);
-                console.log(totalVolume[0].sum_total);
-                var remaining =parseInt(train.capacity)- parseInt(totalVolume[0].sum_total);
+                if (totalVolume[0].sum_total){
+                   var vol=totalVolume[0].sum_total;
+                }
+                else{
+                    var vol =0;
+                }
+                console.log(vol);
+                var remaining =parseInt(train.capacity)- parseInt(vol);
                 console.log(remaining);
                 var trainNew={train,remaining};
                 trainsListWithRemaining.push(trainNew);
