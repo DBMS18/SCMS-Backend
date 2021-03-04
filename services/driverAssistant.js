@@ -21,7 +21,7 @@ class DriverAssistant {
         try {
             var response = await DriverAssistentDAO.markOrderDelivering(order_id);
             if (response != null) {
-                return false
+                return false;
             }
             return true;
 

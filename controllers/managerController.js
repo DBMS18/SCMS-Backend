@@ -40,32 +40,33 @@ managerController.dashboardDetails= async(req,res,next) =>{
 
 
 managerController.getAllOrders_Trains= async(req,res,next) =>{
-  console.log('get all orders and trains');
-  try {        
-      //const store_id = req.body.store_id;  // not sure   
-      const order_list = await managerServices.getOrdersPendingToAssignTrains();
-      if(order_list.length){
-        const response = {
-          err: 0,
-          obj: order_list,
-          msg: ""
-        }
-          
-        
-      }else{
-        const response = {
-          err: 1,
-          obj: {},
-          msg: "No Orders Today"
-        }
+    console.log('get all orders and trains');
+    try {        
+        //const store_id = req.body.store_id;  // not sure   
+        const order_list = await managerServices.getOrdersPendingToAssignTrains();
+        console.log(order_list);
+        if(order_list.length>0){
+          const response = {
+            err: 0,
+            obj: order_list,
+            msg: ""
+          }
+            
         return res.json(response);
-      }
-      
-      
-  } catch (err) {
-    next(err);
-  }
-  
+        }else{
+          const response = {
+            err: 1,
+            obj: {},
+            msg: "No Orders Today"
+          }
+          return res.json(response);
+        }
+        
+        
+    } catch (err) {
+      next(err);
+    }
+    
 };
 managerController.addTrainOrderRecord= async(req,res,next) =>{
     console.log('Adding a new record');
@@ -108,7 +109,7 @@ managerController.getAllRecords= async(req,res,next) =>{
         //const store_id = req.body.store_id;  // not sure   
         const record_list = await managerServices.getAllRecordsAssigned();
         
-        if(record_list.length){
+        if(record_list.length>0){
           const response = {
             err: 0,
             obj: record_list,//should get object list
@@ -129,6 +130,35 @@ managerController.getAllRecords= async(req,res,next) =>{
       next(err);
     }
     
+};
+
+managerController.getAllTrains= async(req,res,next) =>{
+  console.log('get All Trains');
+  try {        
+      //const store_id = req.body.store_id;  // not sure   
+      const record_list = await managerServices.getAlltrainsWithRemainingCapacity();
+      
+      if(record_list.length>0){
+        const response = {
+          err: 0,
+          obj: record_list,//should get object list
+          msg: ""
+        }
+
+        return res.json(response);
+      }else{
+        const response = {
+          err: 1,
+          obj: {},
+          msg: "No Orders Assigned Yet"
+        }
+        return res.json(response);
+      }
+      
+  } catch (err) {
+    next(err);
+  }
+  
 };
 managerController.removeTrainOrderRecord= async(req,res,next) =>{
     console.log('delete a record');
@@ -164,7 +194,9 @@ managerController.updateTrainOrderRecord= async(req,res,next) =>{
     try {        
         const order_id = req.body.order_id;  
         const train_id =req.body.train_id; 
-
+      console.log("update train order record")
+      console.log(order_id)
+      console.log(train_id)
 
         const result = await managerServices.updateTrainOrderRecord(order_id,train_id);
       

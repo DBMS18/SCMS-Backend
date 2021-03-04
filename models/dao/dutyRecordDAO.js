@@ -17,9 +17,13 @@ class DutyRecordDAO{
     }
     
     static async createOneEntity(store_id, route_id, driver_id, assistent_id, truck_number,starting,dateNow){
-        const query  = `CALL create_duty(?,?,?,?,?,?,?)`;
+        try {
+            const query  = `CALL create_duty(?,?,?,?,?,?,?)`;
         const out = await db.query(query,[store_id, route_id, driver_id, assistent_id, truck_number, starting,dateNow]);
         return out[0][0][0].id;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     static async readAllEntity(){

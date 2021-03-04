@@ -9,12 +9,12 @@ const TruckDAO = require("../models/dao/truckDAO");
 const QueryDAO = require("../models/dao/QueryDAO");
 const DutyRecordDAO = require("../models/dao/dutyRecordDAO.js");
 const StorekeeperDutyRecordDAO = require("../models/dao/storekeeper_dutyRecordDAO.js");
-
+var temp = 0;
 class StorekeeperService {
     constructor() {
 
     }
-
+    
    //tharinda
    async orderSendByManager(user_id){
     try{
@@ -261,11 +261,13 @@ class StorekeeperService {
             }else{
                 start_time = start_time+":00:00";
             }
-        
+            console.log(store_id.store_id, route_id, driver_id, assistent_id, truck_number, start_time,dateNow)
             var duty_id = await DutyRecordDAO.createOneEntity(store_id.store_id, route_id, driver_id, assistent_id, truck_number, start_time,dateNow); //check result here
             await QueryDAO.changeOtherEmployeeStatus(store_id.store_id,dateNow);
             await StorekeeperDutyRecordDAO.createOneEntity(user_id,duty_id);
-
+            console.log("duty assign"+ duty_id)
+            temp = duty_id;
+            console.log("temp assign" + temp)
             return duty_id;
 
         } catch (error) {
@@ -320,7 +322,9 @@ class StorekeeperService {
    
     async markAsSendForDelivering(order_id, duty_id) {
         try {
-
+            duty_id = temp;
+            console.log("duty send" + duty_id)
+            console.log("order" + order_id)
             await OrderDutyRecordDAO.createOneEntity(order_id, duty_id);
 
             await OrderDAO.changeOrderStatus(order_id, "sending");

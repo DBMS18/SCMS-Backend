@@ -56,31 +56,34 @@ class ManagerService{
     }
     async getOrdersPendingToAssignTrains(){
         try {       
-            var details = [];
+            var OrdersList = [];
             var pendingList = await orderDAO.getPendingOrders(); //getting manager details
-            
-            console.log('Got All Orders');
             for (let i = 0; i < pendingList.length; i++) {
-                var order = pendingList[i];
+                let order = pendingList[i];
                 let order_id=order.order_id;
                 var store_city = await StoreDAO.getStoreCityByRouteId(order.route_id);
-                var city = store_city.city;
-                var store_id = store_city.store_id;
                 
+                //console.log(store_city);
+                var city = store_city[0].city;
+                var store_id = store_city[0].store_id;
+                //console.log(store_id);
                 let date = order.date;
-                let total_capacity = order.total_capacity;
+                let total_capacity = order.total_amount;
                 let expected_date =order.expected_date;
 
 
                 var train_list = await trainDAO.getTrainsListByStoreId(store_id);
 
-                
-                var OneOrder = { order_id,store_id,city, date,expected_date, total_capacity, train_list }
-                OurStoreOrdersList.push(OneOrder);
-                
+                if (train_list==undefined) {
+                    train_list = [];
+                }
+                console.log("object")
+                console.log(train_list)
+                var OneOrder = {order_id,store_id,city, date,expected_date, total_capacity, train_list};
+                OrdersList.push(OneOrder);
+                console.log(OrdersList)
             }
-            
-            return details;
+            return OrdersList;
                       
         } catch (error) {
             
@@ -129,30 +132,30 @@ class ManagerService{
             var datetime = new Date();
             var date= datetime.toISOString().slice(0,10);
             var details = [];
-            var pendingList = await orderDAO.getAssignedOrders(); //getting manager details
+            var AssignedList = await orderDAO.getAssignedOrders(); //getting manager details
             
 
-            for (let i = 0; i < pendingList.length; i++) {
-                var record = pendingList[i];
+            for (let i = 0; i < AssignedList.length; i++) {
+                var record = AssignedList[i];
                 let order_id=record.order_id;
-                let train_id= record.train_id;
+                
                 var store_city = await StoreDAO.getStoreCityByRouteId(record.route_id);
-                var city = store_city.city;
-                var store_id = store_city.store_id;
+                var city = store_city[0].city;
+                var store_id = store_city[0].store_id;
                 
                 let date = record.date;
-                let total_capacity = record.total_capacity;
+                let total_capacity = record.total_amount;
                 let expected_date =record.expected_date;
 
 
                 var train_list = await trainDAO.getTrainsListByStoreId(store_id);
-
                 
+                let train_id= record.train_id;
                 var OneOrder = { order_id,store_id,city, date,expected_date, total_capacity, train_list,train_id}
-                OurStoreOrdersList.push(OneOrder);
+                details.push(OneOrder);
                 
             }
-            
+            console.log(details);
             return details;
                       
         } catch (error) {
@@ -170,6 +173,32 @@ class ManagerService{
         } catch (error) {
             console.log(error);
         }        
+    }
+    async getAlltrainsWithRemainingCapacity(){
+        try {
+            let trainsList = await trainDAO.getAllTrains();
+            var trainsListWithRemaining =[];
+            for (let i = 0; i < trainsList.length; i++) {
+                var train = trainsList[i];
+                var totalVolume= await trainDAO.getTotalVolume(train.train_id);
+                //console.log(totalVolume);
+                if (totalVolume[0].sum_total){
+                    var vol=totalVolume[0].sum_total;
+                 }
+                 else{
+                     var vol =0;
+                 }
+                var remaining =parseInt(train.capacity)- parseInt(vol);
+                var trainNew={train,remaining};
+                trainsListWithRemaining.push(trainNew);
+                
+            }
+            //console.log(trainsListWithRemaining);
+            return trainsListWithRemaining;
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 }
 

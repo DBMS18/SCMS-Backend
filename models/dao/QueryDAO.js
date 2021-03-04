@@ -48,6 +48,7 @@ class QueryDAO{
             }
             routes = [...routes, route]
         }
+        console.log(routes)
         return routes;
     }
 

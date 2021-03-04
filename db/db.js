@@ -6,7 +6,7 @@ const mysql = require('mysql2/promise');
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'dbms'
+    database: 'dbms2'
   });
   
   pool.getConnection(function(err, connection) {
